@@ -45,7 +45,8 @@ module.exports = {
     },
     modelPostOrders: (data) => {
         return new Promise((resolve, reject) => {
-            connection.query(`INSERT INTO t_order (inv, cashier, menu_id, amount) VALUES ('${data.inv}','${data.cashier}','${data.menu_id}','${data.amount}')`,
+            let sql = data.map(item => `('${item.inv}', '${item.cashier}', ${item.menu_id}, ${item.amount})`)
+            connection.query(`INSERT INTO t_order (inv, cashier, menu_id, amount) VALUES ${sql}`,
                 (error, result) => {
                     if (error) {
                         reject(new Error(error))
