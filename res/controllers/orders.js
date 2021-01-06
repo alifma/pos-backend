@@ -6,6 +6,7 @@ const {
     modelAllOrders,
     modelDetailOrders,
     modelDeleteOrders,
+    modelPostOrders
 } = require('../models/orders')
 
 
@@ -35,6 +36,18 @@ module.exports = {
             .then((response) => {
                 res.json({
                     status: 'Deleted'
+                })
+            })
+            .catch((error) => {
+                res.send(error)
+            })
+    },
+    postOrders: (req, res) => {
+        const data = req.body
+        modelPostOrders(data)
+            .then((response) => {
+                res.json({
+                    status: 'Ok'
                 })
             })
             .catch((error) => {

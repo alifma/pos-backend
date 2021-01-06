@@ -16,7 +16,8 @@ const {
 const {
     getAllOrders,
     getDetailOrders,
-    deleteOrders
+    deleteOrders,
+    postOrders
 } = require('../controllers/orders')
 
 // Atur route tiap halaman
@@ -30,5 +31,6 @@ route
     .get('/orders', getAllOrders)
     .get('/orders/:inv', getDetailOrders)
     .delete(`/orders/:inv`, deleteOrders)
+    .post('/orders', postOrders)
 
 module.exports = route
