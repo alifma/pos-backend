@@ -30,7 +30,7 @@ module.exports = {
     modelAddMenus: (data) => {
         return new Promise((resolve, reject) => {
             connection.query(`INSERT INTO t_menu (name, price, image, category_id)
-            VALUES ('${data.name}', '${data.price}', '${data.image}'), '${data.category_id}`, (error, result) => {
+            VALUES ('${data.name}', '${data.price}', '${data.image}', '${data.category_id}')`, (error, result) => {
                 if (error) {
                     reject(new Error(error))
                 } else {
