@@ -52,6 +52,18 @@ module.exports = {
                     }
                 })
         })
-    }
+    },
+    modelDeleteDetails: (id) => {
+        return new Promise((resolve, reject) => {
+            connection.query(`DELETE FROM t_order WHERE id='${id}'`, (error, result) => {
+                if (error) {
+                    reject(new Error(error))
+                } else {
+                    resolve(result)
+                }
+            })
+        })
+    },
+
 
 }

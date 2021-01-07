@@ -3,6 +3,7 @@ const {
     modelDetailOrders,
     modelDeleteOrders,
     modelPostOrders,
+    modelDeleteDetails
 } = require('../models/orders')
 
 
@@ -53,5 +54,18 @@ module.exports = {
             .catch((error) => {
                 res.send(error)
             })
-    }
+    },
+    deleteOrdersDtl: (req, res) => {
+        const id = req.query.id
+        modelDeleteDetails(id)
+            .then(() => {
+                res.json({
+                    status: 'Deleted'
+                })
+            })
+            .catch((error) => {
+                res.send(error)
+            })
+    },
+
 }
