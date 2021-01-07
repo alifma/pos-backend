@@ -105,7 +105,7 @@ module.exports = {
         modelUpdateDetails(data, id)
             .then(() => {
                 res.json({
-                    status: 'Item Updated!',
+                    message: 'Item Updated!',
                     status: 'OK'
                 })
             })
