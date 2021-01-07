@@ -1,6 +1,8 @@
 // Tambahkan Express ke Project
 const express = require('express')
 const app = express()
+// DotEnv
+require('dotenv').config()
 
 // Tambahkan Body Parser
 const bodyParser = require('body-parser')
@@ -16,9 +18,7 @@ app.use(routeMenu)
 const routeOrder = require('./res/routes/orders')
 app.use(routeOrder)
 
-// Atur Port
-const port = 3000
 // Konfigurasi listen port
-app.listen(port, () => {
-    console.log(`Application is Started on localhost:${port}`)
+app.listen(3000, () => {
+    console.log(`Application is Started on localhost:${process.env.PORT}`)
 })
