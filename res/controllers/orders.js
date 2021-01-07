@@ -16,32 +16,54 @@ module.exports = {
         const sort = req.query.sort == undefined ? 'ASC' : req.query.sort
         modelAllOrders(offset, limit, sort)
             .then((response) => {
-                res.json(response)
+                if (response.length != 0) {
+                    res.json(response)
+                } else {
+                    res.json({
+                        message: "No Data on this page",
+                        status: "ERROR"
+                    })
+                }
             })
             .catch((error) => {
-                res.send(error)
+                res.send(error.message)
             })
     },
     getDetailOrders: (req, res) => {
         const inv = req.params.inv
         modelDetailOrders(inv)
             .then((response) => {
-                res.json(response)
+                if (response.length != 0) {
+                    res.json(response)
+                } else {
+                    res.json({
+                        message: 'Data Not Found!',
+                        status: 'ERROR'
+                    })
+                }
             })
             .catch((error) => {
-                res.send(error)
+                res.send(error.message)
             })
     },
     deleteOrders: (req, res) => {
         const inv = req.params.inv
         modelDeleteOrders(inv)
-            .then(() => {
-                res.json({
-                    status: 'Deleted'
-                })
+            .then((response) => {
+                if (response.affectedRows != 0) {
+                    res.json({
+                        message: 'Orders Deleted!',
+                        status: 'OK'
+                    })
+                } else {
+                    res.json({
+                        message: 'Nothing Deleted!',
+                        status: 'ERROR'
+                    })
+                }
             })
             .catch((error) => {
-                res.send(error)
+                res.send(error.message)
             })
     },
     postOrders: (req, res) => {
@@ -49,20 +71,29 @@ module.exports = {
         modelPostOrders(data)
             .then(() => {
                 res.json({
-                    status: 'Ok'
+                    message: 'Orders Added!',
+                    status: 'OK'
                 })
             })
             .catch((error) => {
-                res.send(error)
+                res.send(error.message)
             })
     },
     deleteOrdersDtl: (req, res) => {
         const id = req.query.id
         modelDeleteDetails(id)
-            .then(() => {
-                res.json({
-                    status: 'Deleted'
-                })
+            .then((response) => {
+                if (response.affectedRows != 0) {
+                    res.json({
+                        message: 'Item Deleted from Order!',
+                        status: 'OK'
+                    })
+                } else {
+                    res.json({
+                        message: 'Nothing Deleted!',
+                        status: 'ERROR'
+                    })
+                }
             })
             .catch((error) => {
                 res.send(error)
@@ -74,7 +105,8 @@ module.exports = {
         modelUpdateDetails(data, id)
             .then(() => {
                 res.json({
-                    status: 'Updated'
+                    status: 'Item Updated!',
+                    status: 'OK'
                 })
             })
             .catch((error) => {

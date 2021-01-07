@@ -11,17 +11,25 @@ const {
 module.exports = {
     getAllMenus: (req, res) => {
         const name = req.query.name == undefined ? '' : req.query.name
-        const limit = 3
+        const limit = 9
         const page = req.query.page == undefined ? '1' : req.query.page
         const offset = page === 1 ? 0 : (page - 1) * limit
         const orderby = req.query.order == undefined ? 'id' : req.query.order
         const sort = req.query.sort == undefined ? 'ASC' : req.query.sort
         modelAllMenus(name, offset, limit, orderby, sort)
             .then((response) => {
-                res.json(response)
+                if (response.length != 0) {
+
+                    res.json(response)
+                } else {
+                    res.json({
+                        message: "No data on this page",
+                        status: "ERROR"
+                    })
+                }
             })
             .catch((error) => {
-                res.send(error)
+                res.send(error.message)
             })
     },
     getDetailMenus: (req, res) => {
@@ -29,61 +37,102 @@ module.exports = {
         const id = req.params.id
         modelDetailMenus(id)
             .then((response) => {
-                res.json(response)
+                if (response.length != 0) {
+                    res.json(response)
+                } else {
+                    res.json({
+                        message: "Nothing Found!",
+                        status: "ERROR"
+                    })
+                }
             })
             .catch((error) => {
-                res.send(error)
+                res.send(error.message)
             })
     },
     addMenus: (req, res) => {
         // Ambil data dari body
         const data = req.body
-        modelAddMenus(data)
-            .then(() => {
-                res.json({
-                    status: 'ok'
+        if (data.image) {
+            modelAddMenus(data)
+                .then(() => {
+                    res.json({
+                        message: 'Add Menu Successful!',
+                        status: 'OK'
+                    })
                 })
-            })
-            .catch((error) => {
-                res.send(error)
-            })
+                .catch((error) => {
+                    res.send(error.message)
+                })
+        } else {
+            res.send("ERROR : Image Should be Defined!")
+        }
+
     },
     deleteMenus: (req, res) => {
         const id = req.params.id
         modelDeleteMenus(id)
-            .then(() => {
-                res.json({
-                    status: 'Deleted'
-                })
+            .then((response) => {
+                if (response.affectedRows != 0) {
+                    res.json({
+                        message: 'Delete Menu Successful!',
+                        status: 'OK'
+                    })
+                } else {
+                    res.json({
+                        message: 'Nothing Deleted!',
+                        status: 'ERROR'
+                    })
+                }
             })
             .catch((error) => {
-                res.send(error)
+                res.send(error.message)
             })
     },
     updateMenus: (req, res) => {
         const id = req.params.id
         const data = req.body
-        modelUpdateMenus(data, id)
-            .then(() => {
-                res.json({
-                    status: 'Updated'
+        if (data.image) {
+            modelUpdateMenus(data, id)
+                .then((response) => {
+                    if (response.affectedRows != 0) {
+                        res.json({
+                            message: 'Data Menu Updated!',
+                            status: 'OK'
+                        })
+                    } else {
+                        res.json({
+                            message: 'Nothing Updated!',
+                            status: 'ERROR'
+                        })
+                    }
                 })
-            })
-            .catch((error) => {
-                res.send(error)
-            })
+                .catch((error) => {
+                    res.send(error.message)
+                })
+        } else {
+            res.send("ERROR : Image Should be Defined!")
+        }
     },
     patchMenus: (req, res) => {
         const id = req.params.id
         const data = req.body
         modelPatchMenus(data, id)
-            .then(() => {
-                res.json({
-                    status: 'Patched'
-                })
+            .then((response) => {
+                if (response.affectedRows != 0) {
+                    res.json({
+                        message: 'Data Menu Patched!',
+                        status: 'OK'
+                    })
+                } else {
+                    res.json({
+                        message: 'Nothing Patched!',
+                        status: 'ERROR'
+                    })
+                }
             })
             .catch((error) => {
-                res.send(error)
+                res.send(error.message)
             })
     }
 
