@@ -7,15 +7,17 @@ const {
     getDetailOrders,
     deleteOrders,
     postOrders,
-    deleteOrdersDtl
+    deleteOrdersDtl,
+    updateOrdersDtl
 } = require('../controllers/orders')
 
 // Atur route orders
 route
     .get('/orders', getAllOrders)
     .get('/orders/:inv', getDetailOrders)
-    .delete('/orders', deleteOrdersDtl)
     .delete(`/orders/:inv`, deleteOrders)
     .post('/orders', postOrders)
+    .delete('/orders', deleteOrdersDtl)
+    .patch('/orders/:id', updateOrdersDtl)
 
 module.exports = route

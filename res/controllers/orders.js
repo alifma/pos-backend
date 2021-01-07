@@ -3,7 +3,8 @@ const {
     modelDetailOrders,
     modelDeleteOrders,
     modelPostOrders,
-    modelDeleteDetails
+    modelDeleteDetails,
+    modelUpdateDetails
 } = require('../models/orders')
 
 
@@ -67,5 +68,18 @@ module.exports = {
                 res.send(error)
             })
     },
+    updateOrdersDtl: (req, res) => {
+        const data = req.body
+        const id = req.params.id
+        modelUpdateDetails(data, id)
+            .then(() => {
+                res.json({
+                    status: 'Updated'
+                })
+            })
+            .catch((error) => {
+                res.send(error)
+            })
+    }
 
 }

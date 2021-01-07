@@ -18,7 +18,7 @@ module.exports = {
     },
     modelDetailOrders: (inv) => {
         return new Promise((resolve, reject) => {
-            connection.query(`SELECT t_menu.name, t_order.amount, t_menu.price, t_menu.price*t_order.amount as total 
+            connection.query(`SELECT t_order.id as order_id, t_menu.name, t_order.amount, t_menu.price, t_menu.price*t_order.amount as total 
             FROM t_order LEFT JOIN t_menu ON t_order.menu_id = t_menu.id 
             WHERE t_order.inv = ${inv}`, (error, result) => {
                 if (error) {
@@ -64,6 +64,18 @@ module.exports = {
             })
         })
     },
+    modelUpdateDetails: (data, id) => {
+        return new Promise((resolve, reject) => {
+            connection.query(`UPDATE t_order SET ? WHERE id=?`, [data, id],
+                (error, result) => {
+                    if (error) {
+                        reject(new Error(error))
+                    } else {
+                        resolve(result)
+                    }
+                })
+        })
+    }
 
 
 }
