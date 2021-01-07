@@ -1,8 +1,5 @@
 // Panggil Method dari model
 const {
-    query
-} = require('../config/database')
-const {
     modelAllMenus,
     modelDetailMenus,
     modelAddMenus,
@@ -42,7 +39,7 @@ module.exports = {
         // Ambil data dari body
         const data = req.body
         modelAddMenus(data)
-            .then((response) => {
+            .then(() => {
                 res.json({
                     status: 'ok'
                 })
@@ -54,7 +51,7 @@ module.exports = {
     deleteMenus: (req, res) => {
         const id = req.params.id
         modelDeleteMenus(id)
-            .then((response) => {
+            .then(() => {
                 res.json({
                     status: 'Deleted'
                 })
@@ -67,7 +64,7 @@ module.exports = {
         const id = req.params.id
         const data = req.body
         modelUpdateMenus(data, id)
-            .then((response) => {
+            .then(() => {
                 res.json({
                     status: 'Updated'
                 })
@@ -80,7 +77,7 @@ module.exports = {
         const id = req.params.id
         const data = req.body
         modelPatchMenus(data, id)
-            .then((response) => {
+            .then(() => {
                 res.json({
                     status: 'Patched'
                 })

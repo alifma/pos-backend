@@ -3,6 +3,9 @@ const express = require('express')
 const app = express()
 // DotEnv
 require('dotenv').config()
+// CORS
+const cors = require('cors')
+app.use(cors())
 
 // Tambahkan Body Parser
 const bodyParser = require('body-parser')

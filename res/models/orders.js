@@ -1,7 +1,4 @@
 // Panggil koneksi database
-const {
-    promise
-} = require('../config/database')
 const connection = require('../config/database')
 module.exports = {
     // Tampilkan Semua Transaksi

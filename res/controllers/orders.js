@@ -1,8 +1,4 @@
 const {
-    query
-} =
-require('../config/database')
-const {
     modelAllOrders,
     modelDetailOrders,
     modelDeleteOrders,
@@ -37,7 +33,7 @@ module.exports = {
     deleteOrders: (req, res) => {
         const inv = req.params.inv
         modelDeleteOrders(inv)
-            .then((response) => {
+            .then(() => {
                 res.json({
                     status: 'Deleted'
                 })
@@ -49,7 +45,7 @@ module.exports = {
     postOrders: (req, res) => {
         const data = req.body
         modelPostOrders(data)
-            .then((response) => {
+            .then(() => {
                 res.json({
                     status: 'Ok'
                 })
