@@ -16,10 +16,12 @@ app.use(bodyParser.json())
 
 // Tambahkan Route yang sudah dikonfigurasi
 const routeMenu = require('./res/routes/menus')
-app.use(routeMenu)
-// Tambahkan Route yang sudah dikonfigurasi
 const routeOrder = require('./res/routes/orders')
+const routeCtgry = require('./res/routes/categories')
+
+app.use(routeMenu)
 app.use(routeOrder)
+app.use(routeCtgry)
 
 // Konfigurasi listen port
 app.listen(3000, () => {

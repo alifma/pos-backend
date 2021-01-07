@@ -2,7 +2,7 @@ const {
     modelAllOrders,
     modelDetailOrders,
     modelDeleteOrders,
-    modelPostOrders
+    modelPostOrders,
 } = require('../models/orders')
 
 
