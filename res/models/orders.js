@@ -5,12 +5,12 @@ const {
 const connection = require('../config/database')
 module.exports = {
     // Tampilkan Semua Transaksi
-    modelAllOrders: () => {
+    modelAllOrders: (offset, limit, sort) => {
         return new Promise((resolve, reject) => {
             connection.query(
                 `SELECT t_order.inv, t_order.cashier, t_order.created_at, 
-                GROUP_CONCAT(t_menu.name) as orders , sum(t_order.amount * t_menu.price) as total 
-                FROM t_order LEFT JOIN t_menu ON t_order.menu_id = t_menu.id GROUP BY inv`, (error, result) => {
+                GROUP_CONCAT(' ',t_menu.name,' x ',t_order.amount) as orders , sum(t_order.amount * t_menu.price) as total 
+                FROM t_order LEFT JOIN t_menu ON t_order.menu_id = t_menu.id GROUP BY inv ${sort} LIMIT ${offset}, ${limit}`, (error, result) => {
                     if (error) {
                         reject(new Error(error))
                     } else {

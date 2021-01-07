@@ -12,15 +12,7 @@ const {
     patchMenus
 } = require('../controllers/menus')
 
-// Ambil Method dari Controller Orders
-const {
-    getAllOrders,
-    getDetailOrders,
-    deleteOrders,
-    postOrders
-} = require('../controllers/orders')
-
-// Atur route tiap halaman
+// Atur route menus
 route
     .get('/menus', getAllMenus)
     .get('/menus/:id', getDetailMenus)
@@ -28,9 +20,5 @@ route
     .delete('/menus/:id', deleteMenus)
     .put('/menus/:id', updateMenus)
     .patch('/menus/:id', patchMenus)
-    .get('/orders', getAllOrders)
-    .get('/orders/:inv', getDetailOrders)
-    .delete(`/orders/:inv`, deleteOrders)
-    .post('/orders', postOrders)
 
 module.exports = route

@@ -12,7 +12,11 @@ const {
 
 module.exports = {
     getAllOrders: (req, res) => {
-        modelAllOrders()
+        const page = req.query.page == undefined ? '1' : req.query.page
+        const limit = 3
+        const offset = page === 1 ? 0 : (page - 1) * limit
+        const sort = req.query.sort == undefined ? 'ASC' : req.query.sort
+        modelAllOrders(offset, limit, sort)
             .then((response) => {
                 res.json(response)
             })

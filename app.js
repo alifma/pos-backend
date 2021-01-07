@@ -10,8 +10,11 @@ app.use(bodyParser.urlencoded({
 app.use(bodyParser.json())
 
 // Tambahkan Route yang sudah dikonfigurasi
-const route = require('./res/routes/menus')
-app.use(route)
+const routeMenu = require('./res/routes/menus')
+app.use(routeMenu)
+// Tambahkan Route yang sudah dikonfigurasi
+const routeOrder = require('./res/routes/orders')
+app.use(routeOrder)
 
 // Atur Port
 const port = 3000

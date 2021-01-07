@@ -13,11 +13,13 @@ const {
 
 module.exports = {
     getAllMenus: (req, res) => {
-        const name = req.query.name
-        const limit = 9
-        const page = req.query.page
+        const name = req.query.name == undefined ? '' : req.query.name
+        const limit = 3
+        const page = req.query.page == undefined ? '1' : req.query.page
         const offset = page === 1 ? 0 : (page - 1) * limit
-        modelAllMenus(name, offset, limit)
+        const orderby = req.query.order == undefined ? 'id' : req.query.order
+        const sort = req.query.sort == undefined ? 'ASC' : req.query.sort
+        modelAllMenus(name, offset, limit, orderby, sort)
             .then((response) => {
                 res.json(response)
             })

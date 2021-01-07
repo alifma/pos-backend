@@ -3,9 +3,9 @@ const connection = require('../config/database')
 // Export setiap methodnya
 module.exports = {
     // Tampilkan Semua Menu
-    modelAllMenus: (name, offset, limit) => {
+    modelAllMenus: (name, offset, limit, orderby, sort) => {
         return new Promise((resolve, reject) => {
-            connection.query(`SELECT * FROM t_menu WHERE name like '%${name}%' LIMIT ${offset}, ${limit}`, (error, result) => {
+            connection.query(`SELECT * FROM t_menu WHERE name LIKE '%${name}%' ORDER BY ${orderby}  ${sort} LIMIT ${offset}, ${limit}`, (error, result) => {
                 if (error) {
                     reject(new Error(error))
                 } else {
