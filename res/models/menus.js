@@ -14,7 +14,7 @@ module.exports = {
             })
         })
     },
-    // Display satu menu
+    // Display Detail menu
     modelDetailMenus: (id) => {
         return new Promise((resolve, reject) => {
             connection.query(`SELECT * FROM t_menu WHERE id=${id}`, (error, result) => {
@@ -54,7 +54,7 @@ module.exports = {
     // Update Menu
     modelUpdateMenus: (data, id) => {
         return new Promise((resolve, reject) => {
-            connection.query(`UPDATE t_menu SET name='${data.name}', price='${data.price}', image='${data.image}', category_id='${data.category_id}' WHERE id = '${id}'`,
+            connection.query(`UPDATE t_menu SET name='${data.name}', price='${data.price}', image='${data.image}', category_id='${data.category_id}', updated_at='${data.updated_at}' WHERE id = '${id}'`,
                 (error, result) => {
                     if (error) {
                         reject(new Error(error))

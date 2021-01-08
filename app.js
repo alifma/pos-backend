@@ -6,6 +6,8 @@ require('dotenv').config()
 // CORS
 const cors = require('cors')
 app.use(cors())
+// Moment Date
+require('moment')().format('YYYY-MM-DD HH:mm:ss');
 
 // Tambahkan Body Parser
 const bodyParser = require('body-parser')
