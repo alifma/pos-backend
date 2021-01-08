@@ -17,6 +17,6 @@ route
     .get('/categories/:id', getDetailCtgry)
     .delete('/categories/:id', deleteCtgry)
     .post('/categories', addCtgry)
-    .put('/categories/:id', updateCtgry)
+    .patch('/categories/:id', updateCtgry)
 
 module.exports = route

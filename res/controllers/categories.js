@@ -18,40 +18,51 @@ module.exports = {
     },
     getDetailCtgry: (req, res) => {
         const id = req.params.id
-        modelDetailCtgry(id)
-            .then((response) => {
-                if (response.length != 0) {
-                    res.json(response)
-                } else {
-                    res.json({
-                        message: "ID Not Found",
-                        status: "ERROR"
-                    })
-                }
+        if (isNaN(id)) {
+            res.json({
+                message: "Wrong Id Type!",
+                status: "ERROR"
             })
-            .catch((error) => {
-                res.send(error.message)
-            })
+        } else {
+            modelDetailCtgry(id)
+                .then((response) => {
+                    if (response.length != 0) {
+                        res.json(response)
+                    } else {
+                        res.json({
+                            message: "ID Not Found",
+                            status: "ERROR"
+                        })
+                    }
+                })
+                .catch((error) => {
+                    res.send(error.message)
+                })
+        }
     },
     deleteCtgry: (req, res) => {
         const id = req.params.id
-        modelDeleteCtgry(id)
-            .then((response) => {
-                if (response.affectedRows != 0) {
-                    res.json({
-                        message: "Category Deleted",
-                        status: "OK"
-                    })
-                } else {
-                    res.json({
-                        message: "Nothing Deleted, ID not Found",
-                        status: "ERROR"
-                    })
-                }
-            })
-            .catch((error) => {
-                res.send(error.message)
-            })
+        if (isNaN(id)) {
+            res.send('ERROR : Wrong ID Type')
+        } else {
+            modelDeleteCtgry(id)
+                .then((response) => {
+                    if (response.affectedRows != 0) {
+                        res.json({
+                            message: "Category Deleted",
+                            status: "OK"
+                        })
+                    } else {
+                        res.json({
+                            message: "Nothing Deleted, ID not Found",
+                            status: "ERROR"
+                        })
+                    }
+                })
+                .catch((error) => {
+                    res.send(error.message)
+                })
+        }
     },
     addCtgry: (req, res) => {
         const data = req.body
@@ -71,8 +82,12 @@ module.exports = {
         }
     },
     updateCtgry: (req, res) => {
-        const data = req.body
+        const currDate = new Date().toISOString().slice(0, 19).replace('T', ' ');
         const id = req.params.id
+        const data = {
+            ...req.body,
+            "updated_at": currDate
+        }
         if (data.name) {
             modelUpdateCtgry(data, id)
                 .then((response) => {
@@ -83,13 +98,13 @@ module.exports = {
                         })
                     } else {
                         res.json({
-                            message: "Nothing Updated!",
+                            message: "Nothing Updated, Wrong ID!",
                             status: "ERROR"
                         })
                     }
                 })
                 .catch((error) => {
-                    req.send(error.message)
+                    res.send(error.message)
                 })
         } else {
             res.send('ERROR : Name cannot be null!')

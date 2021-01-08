@@ -48,7 +48,7 @@ module.exports = {
     },
     modelUpdateCtgry: (data, id) => {
         return new Promise((resolve, reject) => {
-            connection.query(`UPDATE t_category SET name='${data.name}' WHERE ID=${id}`, (error, result) => {
+            connection.query(`UPDATE t_category SET ? WHERE id=?`, [data, id], (error, result) => {
                 if (error) {
                     reject(new Error(error))
                 } else {
