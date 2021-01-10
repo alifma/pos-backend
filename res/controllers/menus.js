@@ -16,7 +16,7 @@ module.exports = {
         const offset = page === 1 ? 0 : (page - 1) * limit
         const orderby = req.query.order == undefined ? 'id' : req.query.order
         const sort = req.query.sort == undefined ? 'ASC' : req.query.sort
-        const availOrder = ['name', 'price', 'id', 'created_at']
+        const availOrder = ['name', 'price', 'id', 'created_at', 'category_id']
         const availSort = ['asc', 'desc']
         if (isNaN(page) || availOrder.includes(orderby) == false || availSort.includes(sort.toLowerCase()) == false) {
             res.json({
@@ -103,7 +103,7 @@ module.exports = {
                         })
                     } else {
                         res.json({
-                            message: 'Nothing Deleted!',
+                            message: 'Nothing Deleted, Wrong ID!',
                             status: 'ERROR'
                         })
                     }
@@ -132,7 +132,7 @@ module.exports = {
                         })
                     } else {
                         res.json({
-                            message: 'Nothing Updated!',
+                            message: 'Nothing Updated, Wrong ID!',
                             status: 'ERROR'
                         })
                     }
@@ -163,7 +163,7 @@ module.exports = {
                         })
                     } else {
                         res.json({
-                            message: 'Nothing Patched!',
+                            message: 'Nothing Patched, Wrong ID!',
                             status: 'ERROR'
                         })
                     }

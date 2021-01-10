@@ -51,7 +51,7 @@ module.exports = {
                         res.json(response)
                     } else {
                         res.json({
-                            message: 'Data Not Found!',
+                            message: 'Data Not Found, Wrong Invoice!',
                             status: 'ERROR'
                         })
                     }
@@ -78,7 +78,7 @@ module.exports = {
                         })
                     } else {
                         res.json({
-                            message: 'Nothing Deleted, no match!',
+                            message: 'Nothing Deleted, Wrong Invoice!',
                             status: 'ERROR'
                         })
                     }
@@ -122,7 +122,7 @@ module.exports = {
                         })
                     } else {
                         res.json({
-                            message: 'Nothing Deleted!',
+                            message: 'Nothing Deleted, Wrong ID!',
                             status: 'ERROR'
                         })
                     }
@@ -148,11 +148,18 @@ module.exports = {
             res.send("ERROR : Please fill all field!")
         } else {
             modelUpdateDetails(data, id)
-                .then(() => {
-                    res.json({
-                        message: 'Item Updated!',
-                        status: 'OK'
-                    })
+                .then((response) => {
+                    if (response.affectedRows != 0) {
+                        res.json({
+                            message: 'Item Updated!',
+                            status: 'OK'
+                        })
+                    } else {
+                        res.json({
+                            message: 'Nothing Updated, Wrong ID!',
+                            status: 'ERROR'
+                        })
+                    }
                 })
                 .catch((error) => {
                     res.send(error)
