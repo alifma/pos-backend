@@ -9,8 +9,7 @@ Backend untuk aplikasi Point of Sales
 - Pagination Menus, Orders
 - Sort (asc,desc) Menus, Orders
 
-## Dependencies
-Packages Installed
+## NPM Packages Used
 - Body-Parser
 - Cors
 - Dotenv
