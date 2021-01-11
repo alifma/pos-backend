@@ -14,5 +14,8 @@ Packages Installed
 - Dotenv
 - Express
 - mysql2
-## Deployment
-This Application not deployed yet
+## Instalation
+1. Install NPM Packages
+> `npm install`
+2. Start Application
+> `npm start`
