@@ -6,11 +6,11 @@ Backend for Point of Sales Application with database relation of 3 tables
    > `npm install`
 2. Create database named `posvue` and import `posvue.sql` from this project folder
 3. Create `.env` files with this value
-   > DB_HOST= (Your Database Host)
-   > DB_USER= (Your Database User)
-   > DB_PASSWORD= (Your Database Password)
-   > DB_NAME=posvue
-   > PORT= (Your decided port number, ex:3000)
+   > - DB_HOST= (Your Database Host) 
+   > - DB_USER= (Your Database User)
+   - DB_PASSWORD= (Your Database Password)
+   - DB_NAME=posvue
+   - PORT= (Your decided port number, ex:3000)
 4. Start Application
    > `npm start`
 
@@ -46,3 +46,4 @@ Backend for Point of Sales Application with database relation of 3 tables
 - [Dotenv](https://www.npmjs.com/package/dotenv)
 - [Express](https://www.npmjs.com/package/express)
 - [mysql2](https://www.npmjs.com/package/mysql2)
+- [moment](https://www.npmjs.com/package/moment)
