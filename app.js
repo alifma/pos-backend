@@ -6,8 +6,6 @@ require('dotenv').config()
 // CORS
 const cors = require('cors')
 app.use(cors())
-// Moment Date
-require('moment')().format('YYYY-MM-DD HH:mm:ss');
 
 // Tambahkan Body Parser
 const bodyParser = require('body-parser')
@@ -15,7 +13,6 @@ app.use(bodyParser.urlencoded({
     extended: true
 }))
 app.use(bodyParser.json())
-
 // Tambahkan Route yang sudah dikonfigurasi
 const routeMenu = require('./res/routes/menus')
 const routeOrder = require('./res/routes/orders')
@@ -26,6 +23,6 @@ app.use(routeOrder)
 app.use(routeCtgry)
 
 // Konfigurasi listen port
-app.listen(3000, () => {
+app.listen(process.env.PORT, () => {
     console.log(`Application is Started on localhost:${process.env.PORT}`)
 })

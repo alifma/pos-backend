@@ -5,7 +5,8 @@ const {
     modelAddCtgry,
     modelUpdateCtgry
 } = require('../models/categories')
-
+// Moment Date
+const moment = require('moment'); // require
 module.exports = {
     getAllCtgry: (req, res) => {
         modelAllCtgry()
@@ -41,11 +42,12 @@ module.exports = {
         }
     },
     deleteCtgry: (req, res) => {
+        const currDate = moment().format('YYYY-MM-DDThh:mm:ss.ms');
         const id = req.params.id
         if (isNaN(id)) {
             res.send('ERROR : Wrong ID Type')
         } else {
-            modelDeleteCtgry(id)
+            modelDeleteCtgry(id, currDate)
                 .then((response) => {
                     if (response.affectedRows != 0) {
                         res.json({
@@ -82,13 +84,13 @@ module.exports = {
         }
     },
     updateCtgry: (req, res) => {
-        const currDate = new Date().toISOString().slice(0, 19).replace('T', ' ');
+        const currDate = moment().format('YYYY-MM-DDThh:mm:ss.ms');
         const id = req.params.id
         const data = {
             ...req.body,
             "updated_at": currDate
         }
-        if (data.name) {
+        if (data.length != 0) {
             modelUpdateCtgry(data, id)
                 .then((response) => {
                     if (response.affectedRows != 0) {

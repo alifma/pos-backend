@@ -8,17 +8,19 @@ const {
     modelPatchMenus
 } = require('../models/menus')
 
+const moment = require('moment'); // require moment
+
 module.exports = {
     getAllMenus: (req, res) => {
         const name = req.query.name == undefined ? '' : req.query.name
-        const limit = 9
+        const limit = req.query.limit == undefined ? '9' : req.query.limit
         const page = req.query.page == undefined ? '1' : req.query.page
         const offset = page === 1 ? 0 : (page - 1) * limit
         const orderby = req.query.order == undefined ? 'id' : req.query.order
         const sort = req.query.sort == undefined ? 'ASC' : req.query.sort
         const availOrder = ['name', 'price', 'id', 'created_at', 'category_id']
         const availSort = ['asc', 'desc']
-        if (isNaN(page) || availOrder.includes(orderby) == false || availSort.includes(sort.toLowerCase()) == false) {
+        if (isNaN(page) || availOrder.includes(orderby) == false || availSort.includes(sort.toLowerCase()) == false || isNaN(limit)) {
             res.json({
                 message: "Wrong parameter",
                 status: "ERROR"
@@ -90,11 +92,12 @@ module.exports = {
 
     },
     deleteMenus: (req, res) => {
+        const currDate = moment().format('YYYY-MM-DDThh:mm:ss.ms');
         const id = req.params.id
         if (isNaN(id)) {
             res.send('ERROR : Wrong ID Type')
         } else {
-            modelDeleteMenus(id)
+            modelDeleteMenus(id, currDate)
                 .then((response) => {
                     if (response.affectedRows != 0) {
                         res.json({
@@ -115,7 +118,7 @@ module.exports = {
     },
     updateMenus: (req, res) => {
         const id = req.params.id
-        const currDate = new Date().toISOString().slice(0, 19).replace('T', ' ');
+        const currDate = moment().format('YYYY-MM-DDThh:mm:ss.ms');
         const data = {
             ...req.body,
             "updated_at": currDate
@@ -146,7 +149,7 @@ module.exports = {
     },
     patchMenus: (req, res) => {
         const id = req.params.id
-        const currDate = new Date().toISOString().slice(0, 19).replace('T', ' ');
+        const currDate = moment().format('YYYY-MM-DDThh:mm:ss.ms');
         const data = {
             ...req.body,
             "updated_at": currDate

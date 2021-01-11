@@ -4,7 +4,7 @@ const connection = require('../config/database')
 module.exports = {
     modelAllCtgry: () => {
         return new Promise((resolve, reject) => {
-            connection.query(`SELECT * FROM t_category`, (error, result) => {
+            connection.query(`SELECT * FROM t_category WHERE isReady=1`, (error, result) => {
                 if (error) {
                     reject(new Error(error))
                 } else {
@@ -24,9 +24,9 @@ module.exports = {
             })
         })
     },
-    modelDeleteCtgry: (id) => {
+    modelDeleteCtgry: (id, currDate) => {
         return new Promise((resolve, reject) => {
-            connection.query(`DELETE FROM t_category WHERE id = ${id}`, (error, result) => {
+            connection.query(`UPDATE t_category SET isReady=0, updated_at='${currDate}' WHERE id = ${id}`, (error, result) => {
                 if (error) {
                     reject(new Error(error))
                 } else {

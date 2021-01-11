@@ -1,36 +1,44 @@
 # Backend POS
-Backend untuk aplikasi Point of Sales dengan 3 tabel yang saling berelasi satu sama lain.
+Backend for Point of Sales Application with database relation of 3 tables 
 
 ## Application Instalation
-1. Install NPM Packages
+1. Install Required NPM Packages 
    > `npm install`
-2. Start Application
+2. Create database named `posvue` and import `posvue.sql` from this project folder
+3. Create `.env` files with this value
+   > DB_HOST= (Your Database Host)
+   > DB_USER= (Your Database User)
+   > DB_PASSWORD= (Your Database Password)
+   > DB_NAME=posvue
+   > PORT= (Your decided port number, ex:3000)
+4. Start Application
    > `npm start`
 
 ## Features
 - CRUD Menus
-   - Menambahkan menu 
-   - Menampilkan semua menu
-   - Menampilkan detail menu
-   - Mencari menu berdasarkan nama
-   - Mengurutkan secara asc ataupun desc
-   - Paginasi halaman 
+   - Add new menu
+   - Display all menu
+   - Display menu details
+   - Search by name
+   - Sort by name, price or date added
+   - Sort ascending or descending
+   - Pagination
    - Update menu
-   - Delete menu
+   - Soft delete menu
 - CRUD Categories
-   - Menambahkan categories
-   - Menampilkan semua categories
-   - Menampilkan detail categories
-   - Update categories
-   - Delete categories
+   - Add new category
+   - Display all category
+   - Display category details
+   - Update category
+   - Soft delete category
 - CRUD Orders
-   - Menambahkan Beberapa Order Sekaligus
-   - Menampilkan order per invoice
-   - Menampilkan detail order tiap invoice
-   - Paginasi halaman 
-   - Update detail order
-   - Delete detail order
-   - Delete berdasarkan invoice
+   - Add bluk order data
+   - Display order based on invoices
+   - Display detail every invoice
+   - Pagination
+   - Update order details 
+   - Delete by details
+   - Delete by invoice
 
 ## NPM Packages Used
 - [Body-Parser](https://www.npmjs.com/package/body-parser)

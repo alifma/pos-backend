@@ -7,15 +7,16 @@ const {
     modelUpdateDetails
 } = require('../models/orders')
 
+const moment = require('moment'); // require Momentjs
 
 module.exports = {
     getAllOrders: (req, res) => {
         const page = req.query.page == undefined ? '1' : req.query.page
-        const limit = 3
+        const limit = req.query.limit == undefined ? '5' : req.query.limit
         const offset = page === 1 ? 0 : (page - 1) * limit
         const sort = req.query.sort == undefined ? 'asc' : (req.query.sort).toLowerCase()
         const availSort = ['asc', 'desc']
-        if (isNaN(page) || availSort.includes(sort.toLowerCase()) == false) {
+        if (isNaN(page) || availSort.includes(sort.toLowerCase()) == false || isNaN(limit)) {
             res.json({
                 message: "Wrong parameter",
                 status: "ERROR"
@@ -134,7 +135,7 @@ module.exports = {
     },
     updateOrdersDtl: (req, res) => {
         const id = req.params.id
-        const currDate = new Date().toISOString().slice(0, 19).replace('T', ' ');
+        const currDate = moment().format('YYYY-MM-DDThh:mm:ss.ms');
         const data = {
             ...req.body,
             "updated_at": currDate

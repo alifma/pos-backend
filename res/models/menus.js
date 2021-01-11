@@ -5,7 +5,7 @@ module.exports = {
     // Tampilkan Semua Menu
     modelAllMenus: (name, offset, limit, orderby, sort) => {
         return new Promise((resolve, reject) => {
-            connection.query(`SELECT * FROM t_menu WHERE name LIKE '%${name}%' ORDER BY ${orderby}  ${sort} LIMIT ${offset}, ${limit}`, (error, result) => {
+            connection.query(`SELECT * FROM t_menu WHERE name LIKE '%${name}%' && isReady=1 ORDER BY ${orderby}  ${sort} LIMIT ${offset}, ${limit}`, (error, result) => {
                 if (error) {
                     reject(new Error(error))
                 } else {
@@ -40,9 +40,9 @@ module.exports = {
         })
     },
     // Hapus Menu
-    modelDeleteMenus: (id) => {
+    modelDeleteMenus: (id, currDate) => {
         return new Promise((resolve, reject) => {
-            connection.query(`DELETE FROM t_menu WHERE id=${id}`, (error, result) => {
+            connection.query(`UPDATE t_menu SET isReady=0, updated_at='${currDate}' WHERE id=${id}`, (error, result) => {
                 if (error) {
                     reject(new Error(error))
                 } else {
