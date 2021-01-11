@@ -1,6 +1,12 @@
 # Backend POS
 Backend untuk aplikasi Point of Sales dengan 3 tabel yang saling berelasi satu sama lain.
 
+## Application Instalation
+1. Install NPM Packages
+   > `npm install`
+2. Start Application
+   > `npm start`
+
 ## Features
 - CRUD Menus
    - Menambahkan menu 
@@ -32,9 +38,3 @@ Backend untuk aplikasi Point of Sales dengan 3 tabel yang saling berelasi satu s
 - [Dotenv](https://www.npmjs.com/package/dotenv)
 - [Express](https://www.npmjs.com/package/express)
 - [mysql2](https://www.npmjs.com/package/mysql2)
-
-## Application Instalation
-1. Install NPM Packages
-   > `npm install`
-2. Start Application
-   > `npm start`
