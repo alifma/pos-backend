@@ -1,5 +1,6 @@
 # Backend POS
 Backend untuk aplikasi Point of Sales
+
 ## Features
 - CRUD Menus
 - CRUD Categories
@@ -7,6 +8,7 @@ Backend untuk aplikasi Point of Sales
 - Search Menus name
 - Pagination Menus, Orders
 - Sort (asc,desc) Menus, Orders
+
 ## Dependencies
 Packages Installed
 - Body-Parser
@@ -14,8 +16,9 @@ Packages Installed
 - Dotenv
 - Express
 - mysql2
+
 ## Instalation
 1. Install NPM Packages
-   - `npm install`
+   > `npm install`
 2. Start Application
-  `npm start`
+   > `npm start`
