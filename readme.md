@@ -16,6 +16,6 @@ Packages Installed
 - mysql2
 ## Instalation
 1. Install NPM Packages
-> `npm install`
+   - `npm install`
 2. Start Application
-> `npm start`
+  `npm start`
