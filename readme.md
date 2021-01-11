@@ -8,9 +8,9 @@ Backend for Point of Sales Application with database relation of 3 tables
 3. Create `.env` files with this value
    > - DB_HOST= (Your Database Host) 
    > - DB_USER= (Your Database User)
-   - DB_PASSWORD= (Your Database Password)
-   - DB_NAME=posvue
-   - PORT= (Your decided port number, ex:3000)
+   > - DB_PASSWORD= (Your Database Password)
+   > - DB_NAME=posvue
+   > - PORT= (Your decided port number, ex:3000)
 4. Start Application
    > `npm start`
 
