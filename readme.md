@@ -16,7 +16,7 @@ Backend untuk aplikasi Point of Sales
 - Express
 - mysql2
 
-## Instalation
+## Application Instalation
 1. Install NPM Packages
    > `npm install`
 2. Start Application
