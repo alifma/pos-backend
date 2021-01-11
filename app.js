@@ -3,6 +3,9 @@ const express = require('express')
 const app = express()
 // DotEnv
 require('dotenv').config()
+const {
+    PORT
+} = require('./res/helpers/env')
 // CORS
 const cors = require('cors')
 app.use(cors())
@@ -23,6 +26,6 @@ app.use(routeOrder)
 app.use(routeCtgry)
 
 // Konfigurasi listen port
-app.listen(process.env.PORT, () => {
-    console.log(`Application is Started on localhost:${process.env.PORT}`)
+app.listen(PORT, () => {
+    console.log(`Application is Started on localhost:${PORT}`)
 })
