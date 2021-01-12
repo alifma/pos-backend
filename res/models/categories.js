@@ -67,6 +67,19 @@ module.exports = {
                 }
             })
         })
-    }
+    },
 
+    // Total Menu
+    modelTotalCtgry: () => {
+        return new Promise((resolve, reject) => {
+            connection.query(`SELECT COUNT(id) as total FROM t_category`,
+                (error, result) => {
+                    if (error) {
+                        reject(new Error(error))
+                    } else {
+                        resolve(result)
+                    }
+                })
+        })
+    }
 }

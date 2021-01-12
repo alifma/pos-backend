@@ -30,7 +30,8 @@ module.exports = {
         const availSort = ['asc', 'desc']
         const total = await modelTotalOrders()
         if (isNaN(page) || availSort.includes(sort.toLowerCase()) == false || isNaN(limit)) {
-            error(res, "Wrong Parameter Type", {}, {})
+            //   Kalau parameter ada yang salah
+            error(res, 400, "Wrong Parameter Type", {}, {})
         } else {
             modelAllOrders(offset, limit, sort)
                 .then((response) => {
@@ -48,13 +49,16 @@ module.exports = {
                             totalInvoices: total[0].total,
                             totalPage: Math.ceil(total[0].total / limit),
                         }
-                        success(res, 'Display All Order Success', pagination, arr)
+                        // Kalau hasilnya bukan array kosong
+                        success(res, 200, 'Display All Order Success', pagination, arr)
                     } else {
-                        error(res, 'No data on this page', {}, {})
+                        // Kalau hasilnya array kosong
+                        success(res, 204, 'No data on this page', {}, {})
                     }
                 })
                 .catch((err) => {
-                    error(res, `Server Side Error ${err.message}`, {}, {})
+                    // Kalau ada salah di model
+                    error(res, 500, `Server Side Error, ${err.message}`, {}, {})
                 })
         }
     },
@@ -68,13 +72,16 @@ module.exports = {
             modelDetailOrders(inv)
                 .then((response) => {
                     if (response.length != 0) {
-                        success(res, `Show Detail Data Success`, {}, response)
+                        // Kalau ada data yang bisa ditampilkan
+                        success(res, 200, `Show Detail Data Success`, {}, response)
                     } else {
-                        error(res, `Data Not Found, Wrong Invoice`, {}, {})
+                        // kalau tidak ada datanya
+                        error(res, 404, `Data Not Found, Wrong Invoice`, {}, {})
                     }
                 })
                 .catch((err) => {
-                    error(res, `Server Side Error ${err.message}`, {}, {})
+                    // Kalau ada error dari model
+                    error(res, 500, `Server Side Error, ${err.message}`, {}, {})
                 })
         }
     },
@@ -83,18 +90,22 @@ module.exports = {
     deleteOrders: (req, res) => {
         const inv = req.params.inv
         if (isNaN(inv)) {
-            error(res, "Wrong Invoice Type", {}, {})
+            // Kalau tipe invoice bukan number
+            error(res, 400, "Wrong Invoice Type", {}, {})
         } else {
             modelDeleteOrders(inv)
                 .then((response) => {
                     if (response.affectedRows != 0) {
-                        success(res, `Delete Order Sucess`, {}, {})
+                        // Kalau ada yang terhapus
+                        success(res, 200, `Delete Order Sucess`, {}, {})
                     } else {
-                        error(res, `Nothing Deleted, Wrong Invoice`, {}, {})
+                        // Kalau tidak ada yang terhapus
+                        error(res, 400, `Nothing Deleted, Wrong Invoice`, {}, {})
                     }
                 })
                 .catch((err) => {
-                    error(res, `Server Side Error ${err.message}`, {}, {})
+                    // Kalau ada error dari model
+                    error(res, 500, `Server Side Error, ${err.message}`, {}, {})
                 })
         }
     },
@@ -105,13 +116,16 @@ module.exports = {
         if (data.length != 0) {
             modelPostOrders(data)
                 .then(() => {
-                    success(res, "Add Order Success", {}, {})
+                    // Kalau berhasil menambahkan
+                    success(res, 201, "Add Order Success", {}, {})
                 })
                 .catch((err) => {
-                    error(res, `Server Side Error ${err.message}`, {}, {})
+                    // Kalau ada error dari model
+                    error(res, 500, `Server Side Error, ${err.message}`, {}, {})
                 })
         } else {
-            error(res, "Please Fill All Field", {}, {})
+            // Kalau ada data yang kosong
+            error(res, 400, "Please Fill All Field", {}, {})
         }
     },
 
@@ -119,18 +133,22 @@ module.exports = {
     deleteOrdersDtl: (req, res) => {
         const id = req.query.id
         if (isNaN(id)) {
-            error(res, "Wrong ID Type", {}, {})
+            // Kalau parameter ID salah
+            error(res, 400, "Wrong ID Type", {}, {})
         } else {
             modelDeleteDetails(id)
                 .then((response) => {
                     if (response.affectedRows != 0) {
-                        success(res, "Delete Order by Detail Success", {}, {})
+                        // Kalau berhaisl menghapus deetail
+                        success(res, 200, "Delete Order by Detail Success", {}, {})
                     } else {
-                        error(res, "Nothing Deleted, Wrong ID", {}, {})
+                        // Kalau gagal menghapus karena salah ID
+                        error(res, 400, "Nothing Deleted, Wrong ID", {}, {})
                     }
                 })
                 .catch((err) => {
-                    error(res, `Server Side Error ${err.message}`, {}, {})
+                    // Kalau ada salah dari model
+                    error(res, 500, `Server Side Error, ${err.message}`, {}, {})
                 })
         }
     },
@@ -144,20 +162,25 @@ module.exports = {
             "updated_at": currDate
         }
         if (isNaN(id)) {
-            error(res, "Wrong ID Type", {}, {})
+            // Kalau idnya salah
+            error(res, 400, "Wrong ID Type", {}, {})
         } else if (data.length == 0) {
-            error(res, "Please Fill All Field", {}, {})
+            // Kalau ada data yang kosong
+            error(res, 400, "Please Fill All Field", {}, {})
         } else {
             modelUpdateDetails(data, id)
                 .then((response) => {
                     if (response.affectedRows != 0) {
-                        success(res, "Update Order Success", {}, {})
+                        // Kalau berhasil mengupdate
+                        success(res, 201, "Update Order Success", {}, {})
                     } else {
-                        error(res, "Nothing Updated, Wrong ID", {}, {})
+                        // Kalau salah ID hapus
+                        error(res, 400, "Nothing Updated, Wrong ID", {}, {})
                     }
                 })
                 .catch((err) => {
-                    error(res, `Server Side Error ${err.message}`, {}, {})
+                    // Kalau misalkan ada error dari model
+                    error(res, 500, `Server Side Error, ${err.message}`, {}, {})
                 })
         }
     }

@@ -27,11 +27,13 @@ module.exports = {
         const offset = page === 1 ? 0 : (page - 1) * limit
         const orderby = req.query.order ? req.query.order : 'id'
         const sort = req.query.sort ? req.query.sort : 'ASC'
+        const total = await modelTotalMenus()
+        // Available Value
         const availOrder = ['name', 'price', 'id', 'created_at', 'category_id']
         const availSort = ['asc', 'desc']
-        const total = await modelTotalMenus()
         if (isNaN(page) || isNaN(limit) || availOrder.includes(orderby) == false || availSort.includes(sort.toLowerCase()) == false) {
-            error(res, 'Wrong Parameter Type', {}, {})
+            //   Kalau tipe parameter ada yang salah
+            error(res, 400, 'Wrong Parameter Type', {}, {})
         } else {
             modelAllMenus(name, offset, limit, orderby, sort)
                 .then((response) => {
@@ -46,13 +48,16 @@ module.exports = {
                             totalMenus: total[0].total,
                             totalPage: Math.ceil(total[0].total / limit),
                         }
-                        success(res, 'Successfully Display All Menu', pagination, arr)
+                        // Kalau arraynya ada isinya
+                        success(res, 200, 'Successfully Display All Menu', pagination, arr)
                     } else {
-                        error(res, 'No data on this page', {}, {})
+                        // Kalau arraynya kosong
+                        success(res, 204, 'No data on this page', {}, {})
                     }
                 })
                 .catch((err) => {
-                    error(res, `Server Side Error ${err.message}`, {}, {})
+                    // Kalau dari model ada trouble
+                    error(res, 500, `Server Side Error, ${err.message}`, {}, {})
                 })
         }
     },
@@ -62,18 +67,22 @@ module.exports = {
         // Ambil params, params itu yang ada di link
         const id = req.params.id
         if (isNaN(id)) {
-            error(res, 'Wrong ID Type', {}, {})
+            // Kalau ID bukan number
+            error(res, 400, 'Wrong ID Type', {}, {})
         } else {
             modelDetailMenus(id)
                 .then((response) => {
                     if (response.length != 0) {
-                        success(res, 'Successfully Display Detail Menu', {}, response)
+                        // Kalau responsenya gak kosong
+                        success(res, 200, 'Successfully Display Detail Menu', {}, response)
                     } else {
-                        error(res, 'Data Not Found, Wrong ID', {}, {})
+                        // Kalau responsenya kosong
+                        error(res, 400, 'Data Not Found, Wrong ID', {}, {})
                     }
                 })
                 .catch((err) => {
-                    error(res, `Server Side Error ${err.message}`, {}, {})
+                    // Kalau dari model ada trouble
+                    error(res, 500, `Server Side Error, ${err.message}`, {}, {})
                 })
         }
     },
@@ -81,16 +90,22 @@ module.exports = {
     // Tambahkan Menu baru
     addMenus: (req, res) => {
         const data = req.body
-        if (data.image || data.length == 0) {
+        if (data.image && data.category_id && data.price && data.name) {
             modelAddMenus(data)
                 .then(() => {
-                    success(res, 'Add Menu Successfull', {}, {})
+                    // Kalau berhasil menambahkan data
+                    success(res, 201, 'Add Menu Successfull', {}, {})
                 })
                 .catch((err) => {
-                    error(res, `Server Side Error ${err.message}`, {}, {})
+                    // Kalau dari model ada trouble
+                    error(res, 500, `Server Side Error, ${err.message}`, {}, {})
                 })
-        } else {
-            error(res, 'Please fill all field!', {}, {})
+        } else if(isNaN(data.price) || isNaN(data.category_id)){
+            // Kalau tidak ada yang kosong
+            error(res, 400, 'Price and Category_id Should be Integer', {}, {})
+        }else {
+            // Kalau tidak ada yang kosong
+            error(res, 400, 'Please fill all field!', {}, {})
         }
 
     },
@@ -100,18 +115,22 @@ module.exports = {
         const currDate = moment().format('YYYY-MM-DDThh:mm:ss.ms');
         const id = req.params.id
         if (isNaN(id)) {
-            error(res, 'Wrong ID Type', {}, {})
+            // Kalau ID bukan number
+            error(res, 400, 'Wrong ID Type', {}, {})
         } else {
             modelDeleteMenus(id, currDate)
                 .then((response) => {
                     if (response.affectedRows != 0) {
-                        success(res, 'Delete Menu Successfull', {}, {})
+                        // Kalau ada rows yang berubah
+                        success(res, 200, 'Delete Menu Successfull', {}, {})
                     } else {
-                        error(res, 'Nothing deleted, Wrong ID!', {}, {})
+                        // Kalau tidak ada  yagn terhapus
+                        error(res, 400, 'Nothing deleted, Wrong ID!', {}, {})
                     }
                 })
                 .catch(() => {
-                    error(res, 'Data is used on some transaction', {}, {})
+                    // Kalau dari model ada trouble
+                    error(res, 500, 'Data is used on some transaction', {}, {})
                 })
         }
     },
@@ -125,21 +144,26 @@ module.exports = {
             'updated_at': currDate
         }
         if (isNaN(id)) {
-            error(res, 'Wrong ID Type', {}, {})
-        } else if (data.image || data.length == 0) {
+            // Kalau parameter ID salah
+            error(res, 400, 'Wrong ID Type', {}, {})
+        } else  if (data.image && data.category_id && data.price && data.name) {
             modelUpdateMenus(data, id)
                 .then((response) => {
                     if (response.affectedRows != 0) {
-                        success(res, 'Delete Menu Successfull', {}, {})
+                        // Kalau berhasil mengupdate
+                        success(res, 200, 'Update Menu Successfull', {}, {})
                     } else {
-                        error(res, 'Nothing Updated, Wrong ID!', {}, {})
+                        // Kalau tidak ada yang terupdate
+                        error(res, 400, 'Nothing Updated, Wrong ID!', {}, {})
                     }
                 })
                 .catch((err) => {
-                    error(res, `Server Side Error ${err.message}`, {}, {})
+                    // Kalau dari model ada trouble
+                    error(res, 500, `Server Side Error, ${err.message}`, {}, {})
                 })
         } else {
-            error(res, 'Please Fill All Field!', {}, {})
+            // Kalau ada data yang kosong
+            error(res, 400, 'Please Fill All Field!', {}, {})
         }
     },
 
@@ -152,18 +176,22 @@ module.exports = {
             'updated_at': currDate
         }
         if (isNaN(id)) {
+            // Kalau parameter IDnya bukan number
             error(res, 'Wrong ID Type', {}, {})
         } else {
             modelPatchMenus(data, id)
                 .then((response) => {
                     if (response.affectedRows != 0) {
-                        success(res, '', {}, {})
+                        // Kalau ada data yang terubah
+                        success(res, 201, 'Menu Patched!', {}, {})
                     } else {
-                        error(res, 'Nothing Patched, Wrong ID!', {}, {})
+                        // Kalau tidak ada data yang berubah
+                        error(res, 400, 'Nothing Patched, Wrong ID!', {}, {})
                     }
                 })
                 .catch((err) => {
-                    error(res, `Server Side Error ${err.message}`, {}, {})
+                    // Kalau dari model ada trouble
+                    error(res, 500, `Server Side Error, ${err.message}`, {}, {})
                 })
         }
     }

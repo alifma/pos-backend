@@ -2,9 +2,9 @@
 module.exports = {
 
     // Kalau Tidak ada Error
-    success: (res, message, pagination, arr) => {
+    success: (res, rescode, message, pagination, arr) => {
         res.json({
-            code: 200,
+            code: rescode,
             msg: message,
             pagination,
             data: arr
@@ -12,9 +12,9 @@ module.exports = {
     },
 
     // Kalau ada error
-    error: (res, message, pagination, arr) => {
+    error: (res, rescode, message, pagination, arr) => {
         res.json({
-            code: 500,
+            code: rescode,
             msg: message,
             pagination,
             data: arr
