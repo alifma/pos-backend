@@ -1,8 +1,10 @@
 // Panggil koneksi database
 const connection = require('../config/database')
+
 // Export setiap methodnya
 module.exports = {
-    // Tampilkan Semua Menu
+
+    // Tampilkan Semua Menu Yang Aktif
     modelAllMenus: (name, offset, limit, orderby, sort) => {
         return new Promise((resolve, reject) => {
             // connection.query(`SELECT * FROM t_menu WHERE name LIKE '%${name}%' && isReady=1 ORDER BY ${orderby}  ${sort} LIMIT ${offset}, ${limit}`, (error, result) => {
@@ -15,7 +17,8 @@ module.exports = {
             })
         })
     },
-    // Display Detail menu
+
+    // Tampilkan Detail menu
     modelDetailMenus: (id) => {
         return new Promise((resolve, reject) => {
             // connection.query(`SELECT * FROM t_menu WHERE id=${id}`, (error, result) => {
@@ -29,7 +32,8 @@ module.exports = {
             })
         })
     },
-    // Tambah Menu
+
+    // Tambah Menu Baru
     modelAddMenus: (data) => {
         return new Promise((resolve, reject) => {
             connection.query(`INSERT INTO t_menu (name, price, image, category_id)
@@ -42,7 +46,8 @@ module.exports = {
             })
         })
     },
-    // Hapus Menu
+
+    // Soft Delete Menu
     modelDeleteMenus: (id, currDate) => {
         return new Promise((resolve, reject) => {
             connection.query(`UPDATE t_menu SET isReady=0, updated_at='${currDate}' WHERE id=${id}`, (error, result) => {
@@ -54,7 +59,8 @@ module.exports = {
             })
         })
     },
-    // Update Menu
+
+    // Perbarui Menu (Keseluruhan)
     modelUpdateMenus: (data, id) => {
         return new Promise((resolve, reject) => {
             connection.query(`UPDATE t_menu SET name='${data.name}', price='${data.price}', image='${data.image}', category_id='${data.category_id}', updated_at='${data.updated_at}' WHERE id = '${id}'`,
@@ -67,7 +73,8 @@ module.exports = {
                 })
         })
     },
-    // Patch Menu
+
+    // Perbarui Menu (Beberapa Kolom)
     modelPatchMenus: (data, id) => {
         return new Promise((resolve, reject) => {
             connection.query(`UPDATE t_menu SET ? WHERE id=?`, [data, id],
@@ -80,6 +87,7 @@ module.exports = {
                 })
         })
     },
+
     // Total Menu
     modelTotalMenus: () => {
         return new Promise((resolve, reject) => {
@@ -93,4 +101,5 @@ module.exports = {
                 })
         })
     }
+
 }

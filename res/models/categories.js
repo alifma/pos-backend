@@ -1,7 +1,10 @@
 // Panggil koneksi database
 const connection = require('../config/database')
+
 // Export setiap methodnya
 module.exports = {
+
+    // Tampilkan Semua Kategori
     modelAllCtgry: () => {
         return new Promise((resolve, reject) => {
             connection.query(`SELECT * FROM t_category WHERE isReady=1`, (error, result) => {
@@ -13,6 +16,8 @@ module.exports = {
             })
         })
     },
+
+    // Tampilkan Detail Kategori
     modelDetailCtgry: (id) => {
         return new Promise((resolve, reject) => {
             connection.query(`SELECT * FROM t_category WHERE id = ${id}`, (error, result) => {
@@ -24,6 +29,8 @@ module.exports = {
             })
         })
     },
+
+    // Softdelete Kategori
     modelDeleteCtgry: (id, currDate) => {
         return new Promise((resolve, reject) => {
             connection.query(`UPDATE t_category SET isReady=0, updated_at='${currDate}' WHERE id = ${id}`, (error, result) => {
@@ -35,6 +42,8 @@ module.exports = {
             })
         })
     },
+
+    // Tambahkan Kategori Baru
     modelAddCtgry: (data) => {
         return new Promise((resolve, reject) => {
             connection.query(`INSERT INTO t_category (name) VALUES ('${data.name}')`, (error, result) => {
@@ -46,6 +55,8 @@ module.exports = {
             })
         })
     },
+
+    // Perbarui Kategori
     modelUpdateCtgry: (data, id) => {
         return new Promise((resolve, reject) => {
             connection.query(`UPDATE t_category SET ? WHERE id=?`, [data, id], (error, result) => {
@@ -57,4 +68,5 @@ module.exports = {
             })
         })
     }
+
 }

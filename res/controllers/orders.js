@@ -1,3 +1,4 @@
+// Model Orders
 const {
     modelAllOrders,
     modelDetailOrders,
@@ -7,15 +8,20 @@ const {
     modelUpdateDetails,
     modelTotalOrders
 } = require('../models/orders')
+
 // Moment JS
 const moment = require('moment');
+
 // Response Helper
 const {
     error,
     success
 } = require('../helpers/response')
 
+// Export Semua Method
 module.exports = {
+
+    // Tampilkan Semua Order Berdasarkan Invoices
     getAllOrders: async (req, res) => {
         const page = req.query.page ? req.query.page : '1'
         const limit = req.query.limit ? req.query.limit : '5'
@@ -29,22 +35,31 @@ module.exports = {
             modelAllOrders(offset, limit, sort)
                 .then((response) => {
                     if (response.length != 0) {
+                        const arr = response.map(i => ({
+                            inv: Number(i.inv),
+                            cashier: i.cashier,
+                            created_at: i.created_at,
+                            orders: i.orders,
+                            total: Number(i.total)
+                        }))
                         const pagination = {
                             page: page,
                             limit: limit,
                             totalInvoices: total[0].total,
                             totalPage: Math.ceil(total[0].total / limit),
                         }
-                        success(res, 'Display All Order Success', pagination, response)
+                        success(res, 'Display All Order Success', pagination, arr)
                     } else {
                         error(res, 'No data on this page', {}, {})
                     }
                 })
-                .catch((error) => {
-                    error(res, `Server Side Error ${error.message}`, {}, {})
+                .catch((err) => {
+                    error(res, `Server Side Error ${err.message}`, {}, {})
                 })
         }
     },
+
+    // Tampilkan Detail Item Tiap Invoices
     getDetailOrders: (req, res) => {
         const inv = req.params.inv
         if (isNaN(inv)) {
@@ -58,11 +73,13 @@ module.exports = {
                         error(res, `Data Not Found, Wrong Invoice`, {}, {})
                     }
                 })
-                .catch((error) => {
-                    error(res, `Server Side Error ${error.message}`, {}, {})
+                .catch((err) => {
+                    error(res, `Server Side Error ${err.message}`, {}, {})
                 })
         }
     },
+
+    // Hapus semua order berdasarkan invoice
     deleteOrders: (req, res) => {
         const inv = req.params.inv
         if (isNaN(inv)) {
@@ -76,11 +93,13 @@ module.exports = {
                         error(res, `Nothing Deleted, Wrong Invoice`, {}, {})
                     }
                 })
-                .catch((error) => {
-                    error(res, `Server Side Error ${error.message}`, {}, {})
+                .catch((err) => {
+                    error(res, `Server Side Error ${err.message}`, {}, {})
                 })
         }
     },
+
+    // Tambahkan Order baru
     postOrders: (req, res) => {
         const data = req.body
         if (data.length != 0) {
@@ -88,13 +107,15 @@ module.exports = {
                 .then(() => {
                     success(res, "Add Order Success", {}, {})
                 })
-                .catch((error) => {
-                    error(res, `Server Side Error ${error.message}`, {}, {})
+                .catch((err) => {
+                    error(res, `Server Side Error ${err.message}`, {}, {})
                 })
         } else {
             error(res, "Please Fill All Field", {}, {})
         }
     },
+
+    // Hapus item di dalam invoice berdasarkan ID
     deleteOrdersDtl: (req, res) => {
         const id = req.query.id
         if (isNaN(id)) {
@@ -108,11 +129,13 @@ module.exports = {
                         error(res, "Nothing Deleted, Wrong ID", {}, {})
                     }
                 })
-                .catch((error) => {
-                    error(res, `Server Side Error ${error.message}`, {}, {})
+                .catch((err) => {
+                    error(res, `Server Side Error ${err.message}`, {}, {})
                 })
         }
     },
+
+    // Perbarui Item di dalam inovice berdasarkan id
     updateOrdersDtl: (req, res) => {
         const id = req.params.id
         const currDate = moment().format('YYYY-MM-DDThh:mm:ss.ms');
@@ -133,8 +156,8 @@ module.exports = {
                         error(res, "Nothing Updated, Wrong ID", {}, {})
                     }
                 })
-                .catch((error) => {
-                    error(res, `Server Side Error ${error.message}`, {}, {})
+                .catch((err) => {
+                    error(res, `Server Side Error ${err.message}`, {}, {})
                 })
         }
     }

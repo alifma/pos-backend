@@ -1,4 +1,4 @@
-// Panggil Method dari model
+// Model Menus
 const {
     modelAllMenus,
     modelDetailMenus,
@@ -8,13 +8,18 @@ const {
     modelPatchMenus,
     modelTotalMenus,
 } = require('../models/menus')
+
+// MomentJS
+const moment = require('moment');
+
+// Response Helper 
 const {
     error,
     success
 } = require('../helpers/response')
-const moment = require('moment'); // require moment
 
 module.exports = {
+    // Tampilkan Semua Menu yang aktif
     getAllMenus: async (req, res) => {
         const name = req.query.name ? req.query.name : ''
         const limit = req.query.limit ? req.query.limit : '9'
@@ -46,12 +51,13 @@ module.exports = {
                         error(res, 'No data on this page', {}, {})
                     }
                 })
-                .catch((error) => {
-                    error(res, 'Unknown Error', {}, {})
+                .catch((err) => {
+                    error(res, `Server Side Error ${err.message}`, {}, {})
                 })
         }
-
     },
+
+    // Tampilkan detail dari sebuah menu
     getDetailMenus: (req, res) => {
         // Ambil params, params itu yang ada di link
         const id = req.params.id
@@ -66,27 +72,30 @@ module.exports = {
                         error(res, 'Data Not Found, Wrong ID', {}, {})
                     }
                 })
-                .catch((error) => {
-                    error(res, 'Unknown Error', {}, {})
+                .catch((err) => {
+                    error(res, `Server Side Error ${err.message}`, {}, {})
                 })
         }
     },
+
+    // Tambahkan Menu baru
     addMenus: (req, res) => {
-        // Ambil data dari body
         const data = req.body
         if (data.image || data.length == 0) {
             modelAddMenus(data)
                 .then(() => {
                     success(res, 'Add Menu Successfull', {}, {})
                 })
-                .catch((error) => {
-                    error(res, `Server Side Error ${error.message}`, {}, {})
+                .catch((err) => {
+                    error(res, `Server Side Error ${err.message}`, {}, {})
                 })
         } else {
             error(res, 'Please fill all field!', {}, {})
         }
 
     },
+
+    // Softdelete Menu
     deleteMenus: (req, res) => {
         const currDate = moment().format('YYYY-MM-DDThh:mm:ss.ms');
         const id = req.params.id
@@ -101,11 +110,13 @@ module.exports = {
                         error(res, 'Nothing deleted, Wrong ID!', {}, {})
                     }
                 })
-                .catch((error) => {
+                .catch(() => {
                     error(res, 'Data is used on some transaction', {}, {})
                 })
         }
     },
+
+    // Perbarui Menu(Keseluruhan)
     updateMenus: (req, res) => {
         const id = req.params.id
         const currDate = moment().format('YYYY-MM-DDThh:mm:ss.ms');
@@ -124,13 +135,15 @@ module.exports = {
                         error(res, 'Nothing Updated, Wrong ID!', {}, {})
                     }
                 })
-                .catch((error) => {
-                    error(res, `Server Side Error ${error.message}`, {}, {})
+                .catch((err) => {
+                    error(res, `Server Side Error ${err.message}`, {}, {})
                 })
         } else {
             error(res, 'Please Fill All Field!', {}, {})
         }
     },
+
+    // Perbarui Menu (Beberapa Kolom)
     patchMenus: (req, res) => {
         const id = req.params.id
         const currDate = moment().format('YYYY-MM-DDThh:mm:ss.ms');
@@ -149,8 +162,8 @@ module.exports = {
                         error(res, 'Nothing Patched, Wrong ID!', {}, {})
                     }
                 })
-                .catch((error) => {
-                    error(res, `Server Side Error ${error.message}`, {}, {})
+                .catch((err) => {
+                    error(res, `Server Side Error ${err.message}`, {}, {})
                 })
         }
     }

@@ -1,6 +1,7 @@
-// DotEnv
+// Inisialisasi DotEnv
 require('dotenv').config()
 
+// Export semua variabelnya
 module.exports = {
     PORT: process.env.PORT,
     DB_HOST: process.env.DB_HOST,

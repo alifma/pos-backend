@@ -1,7 +1,10 @@
 // Panggil koneksi database
 const connection = require('../config/database')
+
+// Eksport Semua Method
 module.exports = {
-    // Tampilkan Semua Transaksi
+
+    // Tampilkan Semua Transaksi Berdasarkan Invoice
     modelAllOrders: (offset, limit, sort) => {
         return new Promise((resolve, reject) => {
             connection.query(
@@ -16,6 +19,8 @@ module.exports = {
                 })
         })
     },
+
+    // Tampilkan Detail order tiap invoices
     modelDetailOrders: (inv) => {
         return new Promise((resolve, reject) => {
             connection.query(`SELECT t_order.id as order_id, t_menu.name, t_order.amount, t_menu.price, t_menu.price*t_order.amount as total 
@@ -29,6 +34,8 @@ module.exports = {
             })
         })
     },
+
+    // Hapus Order Berdasarkan Invoice
     modelDeleteOrders: (inv) => {
         return new Promise((resolve, reject) => {
             connection.query(`DELETE FROM t_order WHERE inv=${inv}`, (error, result) => {
@@ -40,6 +47,8 @@ module.exports = {
             })
         })
     },
+
+    // Tambahkan Order Baru
     modelPostOrders: (data) => {
         return new Promise((resolve, reject) => {
             let sql = data.map(item => `('${item.inv}', '${item.cashier}', ${item.menu_id}, ${item.amount})`)
@@ -53,6 +62,8 @@ module.exports = {
                 })
         })
     },
+
+    // Hapus Detail dari setiap invoice berdasarkan ID
     modelDeleteDetails: (id) => {
         return new Promise((resolve, reject) => {
             connection.query(`DELETE FROM t_order WHERE id='${id}'`, (error, result) => {
@@ -64,6 +75,8 @@ module.exports = {
             })
         })
     },
+
+    // Perbarui Detail dari setiap order berdasarkan ID
     modelUpdateDetails: (data, id) => {
         return new Promise((resolve, reject) => {
             connection.query(`UPDATE t_order SET ? WHERE id=?`, [data, id],
@@ -76,7 +89,8 @@ module.exports = {
                 })
         })
     },
-    // Total Menu
+
+    // Total Order
     modelTotalOrders: () => {
         return new Promise((resolve, reject) => {
             connection.query(`SELECT COUNT(DISTINCT inv) as total FROM t_order`,
@@ -89,6 +103,5 @@ module.exports = {
                 })
         })
     }
-
 
 }
