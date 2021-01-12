@@ -6,38 +6,37 @@ const {
     modelUpdateCtgry
 } = require('../models/categories')
 // Moment Date
-const moment = require('moment'); // require
+const moment = require('moment');
+// Response Helper
+const {
+    error,
+    success
+} = require('../helpers/response')
 module.exports = {
     getAllCtgry: (req, res) => {
         modelAllCtgry()
             .then((response) => {
-                res.json(response)
+                success(res, "Show All Category Success", {}, response)
             })
             .catch((error) => {
-                res.send(error.message)
+                error(res, `Server Side Error ${error.message}`, {}, {})
             })
     },
     getDetailCtgry: (req, res) => {
         const id = req.params.id
         if (isNaN(id)) {
-            res.json({
-                message: "Wrong Id Type!",
-                status: "ERROR"
-            })
+            error(res, "Wrong ID Type", {}, {})
         } else {
             modelDetailCtgry(id)
                 .then((response) => {
                     if (response.length != 0) {
-                        res.json(response)
+                        success(res, "Show Detail Category Success", {}, response)
                     } else {
-                        res.json({
-                            message: "ID Not Found",
-                            status: "ERROR"
-                        })
+                        error(res, "Data Not Found, Wrong ID", {}, {})
                     }
                 })
                 .catch((error) => {
-                    res.send(error.message)
+                    error(res, `Server Side Error ${error.message}`, {}, {})
                 })
         }
     },
@@ -45,42 +44,33 @@ module.exports = {
         const currDate = moment().format('YYYY-MM-DDThh:mm:ss.ms');
         const id = req.params.id
         if (isNaN(id)) {
-            res.send('ERROR : Wrong ID Type')
+            error(res, "Wrong ID Type", {}, {})
         } else {
             modelDeleteCtgry(id, currDate)
                 .then((response) => {
                     if (response.affectedRows != 0) {
-                        res.json({
-                            message: "Category Deleted",
-                            status: "OK"
-                        })
+                        success(res, "Delete Category Success", {}, {})
                     } else {
-                        res.json({
-                            message: "Nothing Deleted, ID not Found",
-                            status: "ERROR"
-                        })
+                        error(res, "Nothing Deleted, Wrong ID", {}, {})
                     }
                 })
                 .catch((error) => {
-                    res.send(error.message)
+                    error(res, `Server Side Error ${error.message}`, {}, {})
                 })
         }
     },
     addCtgry: (req, res) => {
         const data = req.body
-        if (data.name) {
+        if (data.length != 0) {
             modelAddCtgry(data)
                 .then(() => {
-                    res.json({
-                        message: "New Category Added!",
-                        status: "OK"
-                    })
+                    success(res, "Add Category Success", {}, {})
                 })
                 .catch((error) => {
-                    res.send(error.message)
+                    error(res, `Server Side Error ${error.message}`, {}, {})
                 })
         } else {
-            res.send('ERROR : Name cannot be null!')
+            error(res, "Every field shouldn't empty", {}, {})
         }
     },
     updateCtgry: (req, res) => {
@@ -94,22 +84,16 @@ module.exports = {
             modelUpdateCtgry(data, id)
                 .then((response) => {
                     if (response.affectedRows != 0) {
-                        res.json({
-                            message: "Category Updated!",
-                            status: "OK"
-                        })
+                        success(res, "Update Category Success", {}, {})
                     } else {
-                        res.json({
-                            message: "Nothing Updated, Wrong ID!",
-                            status: "ERROR"
-                        })
+                        error(res, "Nothing Updated, Wrong ID", {}, {})
                     }
                 })
                 .catch((error) => {
-                    res.send(error.message)
+                    error(res, `Server Side Error ${error.message}`, {}, {})
                 })
         } else {
-            res.send('ERROR : Name cannot be null!')
+            error(res, "Every field shouldn't empty", {}, {})
         }
     }
 }

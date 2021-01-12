@@ -5,7 +5,8 @@ module.exports = {
     // Tampilkan Semua Menu
     modelAllMenus: (name, offset, limit, orderby, sort) => {
         return new Promise((resolve, reject) => {
-            connection.query(`SELECT * FROM t_menu WHERE name LIKE '%${name}%' && isReady=1 ORDER BY ${orderby}  ${sort} LIMIT ${offset}, ${limit}`, (error, result) => {
+            // connection.query(`SELECT * FROM t_menu WHERE name LIKE '%${name}%' && isReady=1 ORDER BY ${orderby}  ${sort} LIMIT ${offset}, ${limit}`, (error, result) => {
+            connection.query(`SELECT t_menu.id,t_menu.name as name, t_category.name as category,t_menu.price, t_menu.image, t_menu.created_at FROM t_menu LEFT JOIN t_category ON t_menu.category_id = t_category.id WHERE t_menu.name LIKE '%${name}%' && t_menu.isReady=1 ORDER BY t_menu.${orderby}  ${sort} LIMIT ${offset}, ${limit}`, (error, result) => {
                 if (error) {
                     reject(new Error(error))
                 } else {
@@ -17,7 +18,9 @@ module.exports = {
     // Display Detail menu
     modelDetailMenus: (id) => {
         return new Promise((resolve, reject) => {
-            connection.query(`SELECT * FROM t_menu WHERE id=${id}`, (error, result) => {
+            // connection.query(`SELECT * FROM t_menu WHERE id=${id}`, (error, result) => {
+            connection.query(`SELECT t_menu.id, t_menu.name as name, t_category.name as category, t_menu.price, t_menu.image, t_menu.created_at, t_menu.updated_at
+            FROM t_menu LEFT JOIN t_category ON t_menu.category_id = t_category.id WHERE t_menu.id=${id}`, (error, result) => {
                 if (error) {
                     reject(new Error(error))
                 } else {
@@ -68,6 +71,19 @@ module.exports = {
     modelPatchMenus: (data, id) => {
         return new Promise((resolve, reject) => {
             connection.query(`UPDATE t_menu SET ? WHERE id=?`, [data, id],
+                (error, result) => {
+                    if (error) {
+                        reject(new Error(error))
+                    } else {
+                        resolve(result)
+                    }
+                })
+        })
+    },
+    // Total Menu
+    modelTotalMenus: () => {
+        return new Promise((resolve, reject) => {
+            connection.query(`SELECT COUNT(id) as total FROM t_menu`,
                 (error, result) => {
                     if (error) {
                         reject(new Error(error))

@@ -5,44 +5,49 @@ const {
     modelAddMenus,
     modelDeleteMenus,
     modelUpdateMenus,
-    modelPatchMenus
+    modelPatchMenus,
+    modelTotalMenus,
 } = require('../models/menus')
-
+const {
+    error,
+    success
+} = require('../helpers/response')
 const moment = require('moment'); // require moment
 
 module.exports = {
-    getAllMenus: (req, res) => {
-        const name = req.query.name == undefined ? '' : req.query.name
-        const limit = req.query.limit == undefined ? '9' : req.query.limit
-        const page = req.query.page == undefined ? '1' : req.query.page
+    getAllMenus: async (req, res) => {
+        const name = req.query.name ? req.query.name : ''
+        const limit = req.query.limit ? req.query.limit : '9'
+        const page = req.query.page ? req.query.page : '1'
         const offset = page === 1 ? 0 : (page - 1) * limit
-        const orderby = req.query.order == undefined ? 'id' : req.query.order
-        const sort = req.query.sort == undefined ? 'ASC' : req.query.sort
+        const orderby = req.query.order ? req.query.order : 'id'
+        const sort = req.query.sort ? req.query.sort : 'ASC'
         const availOrder = ['name', 'price', 'id', 'created_at', 'category_id']
         const availSort = ['asc', 'desc']
-        if (isNaN(page) || availOrder.includes(orderby) == false || availSort.includes(sort.toLowerCase()) == false || isNaN(limit)) {
-            res.json({
-                message: "Wrong parameter",
-                status: "ERROR"
-            })
+        const total = await modelTotalMenus()
+        if (isNaN(page) || isNaN(limit) || availOrder.includes(orderby) == false || availSort.includes(sort.toLowerCase()) == false) {
+            error(res, 'Wrong Parameter Type', {}, {})
         } else {
             modelAllMenus(name, offset, limit, orderby, sort)
                 .then((response) => {
                     if (response.length != 0) {
-                        const newResponse = response.map(i => ({
+                        const arr = response.map(i => ({
                             ...i,
                             isClicked: false
                         }))
-                        res.json(newResponse)
+                        const pagination = {
+                            page: page,
+                            limit: limit,
+                            totalMenus: total[0].total,
+                            totalPage: Math.ceil(total[0].total / limit),
+                        }
+                        success(res, 'Successfully Display All Menu', pagination, arr)
                     } else {
-                        res.json({
-                            message: "No data on this page",
-                            status: "ERROR"
-                        })
+                        error(res, 'No data on this page', {}, {})
                     }
                 })
                 .catch((error) => {
-                    res.send(error.message)
+                    error(res, 'Unknown Error', {}, {})
                 })
         }
 
@@ -51,24 +56,18 @@ module.exports = {
         // Ambil params, params itu yang ada di link
         const id = req.params.id
         if (isNaN(id)) {
-            res.json({
-                message: "Wrong Id Type!",
-                status: "ERROR"
-            })
+            error(res, 'Wrong ID Type', {}, {})
         } else {
             modelDetailMenus(id)
                 .then((response) => {
                     if (response.length != 0) {
-                        res.json(response)
+                        success(res, 'Successfully Display Detail Menu', {}, response)
                     } else {
-                        res.json({
-                            message: "Nothing Found!",
-                            status: "ERROR"
-                        })
+                        error(res, 'Data Not Found, Wrong ID', {}, {})
                     }
                 })
                 .catch((error) => {
-                    res.send(error.message)
+                    error(res, 'Unknown Error', {}, {})
                 })
         }
     },
@@ -78,16 +77,13 @@ module.exports = {
         if (data.image || data.length == 0) {
             modelAddMenus(data)
                 .then(() => {
-                    res.json({
-                        message: 'Add Menu Successful!',
-                        status: 'OK'
-                    })
+                    success(res, 'Add Menu Successfull', {}, {})
                 })
                 .catch((error) => {
-                    res.send(error.message)
+                    error(res, `Server Side Error ${error.message}`, {}, {})
                 })
         } else {
-            res.send("ERROR : Please fill all field!")
+            error(res, 'Please fill all field!', {}, {})
         }
 
     },
@@ -95,24 +91,18 @@ module.exports = {
         const currDate = moment().format('YYYY-MM-DDThh:mm:ss.ms');
         const id = req.params.id
         if (isNaN(id)) {
-            res.send('ERROR : Wrong ID Type')
+            error(res, 'Wrong ID Type', {}, {})
         } else {
             modelDeleteMenus(id, currDate)
                 .then((response) => {
                     if (response.affectedRows != 0) {
-                        res.json({
-                            message: 'Delete Menu Successful!',
-                            status: 'OK'
-                        })
+                        success(res, 'Delete Menu Successfull', {}, {})
                     } else {
-                        res.json({
-                            message: 'Nothing Deleted, Wrong ID!',
-                            status: 'ERROR'
-                        })
+                        error(res, 'Nothing deleted, Wrong ID!', {}, {})
                     }
                 })
                 .catch((error) => {
-                    res.send('ERROR : Data is used on some transaction')
+                    error(res, 'Data is used on some transaction', {}, {})
                 })
         }
     },
@@ -121,30 +111,24 @@ module.exports = {
         const currDate = moment().format('YYYY-MM-DDThh:mm:ss.ms');
         const data = {
             ...req.body,
-            "updated_at": currDate
+            'updated_at': currDate
         }
         if (isNaN(id)) {
-            res.send('ERROR : Wrong ID Type')
+            error(res, 'Wrong ID Type', {}, {})
         } else if (data.image || data.length == 0) {
             modelUpdateMenus(data, id)
                 .then((response) => {
                     if (response.affectedRows != 0) {
-                        res.json({
-                            message: 'Data Menu Updated!',
-                            status: 'OK'
-                        })
+                        success(res, 'Delete Menu Successfull', {}, {})
                     } else {
-                        res.json({
-                            message: 'Nothing Updated, Wrong ID!',
-                            status: 'ERROR'
-                        })
+                        error(res, 'Nothing Updated, Wrong ID!', {}, {})
                     }
                 })
                 .catch((error) => {
-                    res.send(error.message)
+                    error(res, `Server Side Error ${error.message}`, {}, {})
                 })
         } else {
-            res.send("ERROR : Please fill all field!")
+            error(res, 'Please Fill All Field!', {}, {})
         }
     },
     patchMenus: (req, res) => {
@@ -152,27 +136,21 @@ module.exports = {
         const currDate = moment().format('YYYY-MM-DDThh:mm:ss.ms');
         const data = {
             ...req.body,
-            "updated_at": currDate
+            'updated_at': currDate
         }
         if (isNaN(id)) {
-            res.send('ERROR : Wrong ID Type')
+            error(res, 'Wrong ID Type', {}, {})
         } else {
             modelPatchMenus(data, id)
                 .then((response) => {
                     if (response.affectedRows != 0) {
-                        res.json({
-                            message: 'Data Menu Patched!',
-                            status: 'OK'
-                        })
+                        success(res, '', {}, {})
                     } else {
-                        res.json({
-                            message: 'Nothing Patched, Wrong ID!',
-                            status: 'ERROR'
-                        })
+                        error(res, 'Nothing Patched, Wrong ID!', {}, {})
                     }
                 })
                 .catch((error) => {
-                    res.send(error.message)
+                    error(res, `Server Side Error ${error.message}`, {}, {})
                 })
         }
     }

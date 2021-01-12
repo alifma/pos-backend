@@ -75,6 +75,19 @@ module.exports = {
                     }
                 })
         })
+    },
+    // Total Menu
+    modelTotalOrders: () => {
+        return new Promise((resolve, reject) => {
+            connection.query(`SELECT COUNT(DISTINCT inv) as total FROM t_order`,
+                (error, result) => {
+                    if (error) {
+                        reject(new Error(error))
+                    } else {
+                        resolve(result)
+                    }
+                })
+        })
     }
 
 

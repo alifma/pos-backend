@@ -4,88 +4,80 @@ const {
     modelDeleteOrders,
     modelPostOrders,
     modelDeleteDetails,
-    modelUpdateDetails
+    modelUpdateDetails,
+    modelTotalOrders
 } = require('../models/orders')
-
-const moment = require('moment'); // require Momentjs
+// Moment JS
+const moment = require('moment');
+// Response Helper
+const {
+    error,
+    success
+} = require('../helpers/response')
 
 module.exports = {
-    getAllOrders: (req, res) => {
-        const page = req.query.page == undefined ? '1' : req.query.page
-        const limit = req.query.limit == undefined ? '5' : req.query.limit
+    getAllOrders: async (req, res) => {
+        const page = req.query.page ? req.query.page : '1'
+        const limit = req.query.limit ? req.query.limit : '5'
         const offset = page === 1 ? 0 : (page - 1) * limit
-        const sort = req.query.sort == undefined ? 'asc' : (req.query.sort).toLowerCase()
+        const sort = req.query.sort ? (req.query.sort).toLowerCase() : 'asc'
         const availSort = ['asc', 'desc']
+        const total = await modelTotalOrders()
         if (isNaN(page) || availSort.includes(sort.toLowerCase()) == false || isNaN(limit)) {
-            res.json({
-                message: "Wrong parameter",
-                status: "ERROR"
-            })
+            error(res, "Wrong Parameter Type", {}, {})
         } else {
             modelAllOrders(offset, limit, sort)
                 .then((response) => {
                     if (response.length != 0) {
-                        res.json(response)
+                        const pagination = {
+                            page: page,
+                            limit: limit,
+                            totalInvoices: total[0].total,
+                            totalPage: Math.ceil(total[0].total / limit),
+                        }
+                        success(res, 'Display All Order Success', pagination, response)
                     } else {
-                        res.json({
-                            message: "No Data on this page",
-                            status: "ERROR"
-                        })
+                        error(res, 'No data on this page', {}, {})
                     }
                 })
                 .catch((error) => {
-                    res.send(error.message)
+                    error(res, `Server Side Error ${error.message}`, {}, {})
                 })
         }
     },
     getDetailOrders: (req, res) => {
         const inv = req.params.inv
         if (isNaN(inv)) {
-            res.json({
-                message: "Wrong Invoice Type",
-                status: "ERROR"
-            })
+            error(res, "Wrong Invoice Type", {}, {})
         } else {
             modelDetailOrders(inv)
                 .then((response) => {
                     if (response.length != 0) {
-                        res.json(response)
+                        success(res, `Show Detail Data Success`, {}, response)
                     } else {
-                        res.json({
-                            message: 'Data Not Found, Wrong Invoice!',
-                            status: 'ERROR'
-                        })
+                        error(res, `Data Not Found, Wrong Invoice`, {}, {})
                     }
                 })
                 .catch((error) => {
-                    res.send(error.message)
+                    error(res, `Server Side Error ${error.message}`, {}, {})
                 })
         }
     },
     deleteOrders: (req, res) => {
         const inv = req.params.inv
         if (isNaN(inv)) {
-            res.json({
-                message: "Wrong Invoice Type",
-                status: "ERROR"
-            })
+            error(res, "Wrong Invoice Type", {}, {})
         } else {
             modelDeleteOrders(inv)
                 .then((response) => {
                     if (response.affectedRows != 0) {
-                        res.json({
-                            message: 'Orders Deleted!',
-                            status: 'OK'
-                        })
+                        success(res, `Delete Order Sucess`, {}, {})
                     } else {
-                        res.json({
-                            message: 'Nothing Deleted, Wrong Invoice!',
-                            status: 'ERROR'
-                        })
+                        error(res, `Nothing Deleted, Wrong Invoice`, {}, {})
                     }
                 })
                 .catch((error) => {
-                    res.send(error.message)
+                    error(res, `Server Side Error ${error.message}`, {}, {})
                 })
         }
     },
@@ -94,42 +86,30 @@ module.exports = {
         if (data.length != 0) {
             modelPostOrders(data)
                 .then(() => {
-                    res.json({
-                        message: 'Orders Added!',
-                        status: 'OK'
-                    })
+                    success(res, "Add Order Success", {}, {})
                 })
                 .catch((error) => {
-                    res.send(error.message)
+                    error(res, `Server Side Error ${error.message}`, {}, {})
                 })
         } else {
-            res.send("ERROR : Please fill all field!")
+            error(res, "Please Fill All Field", {}, {})
         }
     },
     deleteOrdersDtl: (req, res) => {
         const id = req.query.id
         if (isNaN(id)) {
-            res.json({
-                message: "Wrong ID Type",
-                status: "ERROR"
-            })
+            error(res, "Wrong ID Type", {}, {})
         } else {
             modelDeleteDetails(id)
                 .then((response) => {
                     if (response.affectedRows != 0) {
-                        res.json({
-                            message: 'Item Deleted from Order!',
-                            status: 'OK'
-                        })
+                        success(res, "Delete Order by Detail Success", {}, {})
                     } else {
-                        res.json({
-                            message: 'Nothing Deleted, Wrong ID!',
-                            status: 'ERROR'
-                        })
+                        error(res, "Nothing Deleted, Wrong ID", {}, {})
                     }
                 })
                 .catch((error) => {
-                    res.send(error)
+                    error(res, `Server Side Error ${error.message}`, {}, {})
                 })
         }
     },
@@ -141,29 +121,20 @@ module.exports = {
             "updated_at": currDate
         }
         if (isNaN(id)) {
-            res.json({
-                message: "Wrong ID Type",
-                status: "ERROR"
-            })
+            error(res, "Wrong ID Type", {}, {})
         } else if (data.length == 0) {
-            res.send("ERROR : Please fill all field!")
+            error(res, "Please Fill All Field", {}, {})
         } else {
             modelUpdateDetails(data, id)
                 .then((response) => {
                     if (response.affectedRows != 0) {
-                        res.json({
-                            message: 'Item Updated!',
-                            status: 'OK'
-                        })
+                        success(res, "Update Order Success", {}, {})
                     } else {
-                        res.json({
-                            message: 'Nothing Updated, Wrong ID!',
-                            status: 'ERROR'
-                        })
+                        error(res, "Nothing Updated, Wrong ID", {}, {})
                     }
                 })
                 .catch((error) => {
-                    res.send(error)
+                    error(res, `Server Side Error ${error.message}`, {}, {})
                 })
         }
     }
