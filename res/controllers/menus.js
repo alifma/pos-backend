@@ -49,7 +49,7 @@ module.exports = {
                             totalPage: Math.ceil(total[0].total / limit),
                         }
                         // Kalau arraynya ada isinya
-                        success(res, 200, 'Successfully Display All Menu', pagination, arr)
+                        success(res, 200, 'Display All Menu Success', pagination, arr)
                     } else {
                         // Kalau arraynya kosong
                         success(res, 204, 'No data on this page', {}, {})
