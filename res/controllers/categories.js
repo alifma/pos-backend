@@ -4,7 +4,8 @@ const {
     modelDetailCtgry,
     modelDeleteCtgry,
     modelAddCtgry,
-    modelUpdateCtgry
+    modelUpdateCtgry,
+    modelTotalCtgry
 } = require('../models/categories')
 
 // Moment Date
@@ -21,9 +22,11 @@ module.exports = {
 
     // Tampilkan Semua Kategori
     getAllCtgry: async (req, res) => {
-        modelAllCtgry()
+        totalCategory = await modelTotalCtgry()
+        const deleteStatus = req.query.ready?req.query.ready:1 
+        modelAllCtgry(deleteStatus)
             .then((response) => {
-                success(res, 200, "Show All Category Success", totalCategory, response)
+                success(res, 200, "Show All Category Success", totalCategory[0], response)
             })
             .catch((err) => {
                 error(res, 500, `Server Side Error, ${err.message}`, {}, {})
@@ -44,7 +47,7 @@ module.exports = {
                         success(res, 200, "Show Detail Category Success", {}, response)
                     } else {
                         // Jika tidak ada hasilnya
-                        error(res, 404, "Data Not Found, Wrong ID", {}, {})
+                        error(res, 400, "Data Not Found, Wrong ID", {}, {})
                     }
                 })
                 .catch((err) => {
@@ -86,7 +89,7 @@ module.exports = {
             modelAddCtgry(data)
                 .then(() => {
                     // Jika tambah data sukses
-                    success(res, 201, "Add Category Success", {}, {})
+                    success(res, 200, "Add Category Success", {}, {})
                 })
                 .catch((err) => {
                     // Jika tambah data di modelnya gagal
@@ -111,7 +114,7 @@ module.exports = {
                 .then((response) => {
                     if (response.affectedRows != 0) {
                         // Jika ada data terupdate
-                        success(res, 201, "Update Category Success", {}, {})
+                        success(res, 200, "Update Category Success", {}, {})
                     } else {
                         // Jikka tidak ada yang terupdate
                         error(res, 400, "Nothing Updated, Wrong ID", {}, {})

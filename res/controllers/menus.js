@@ -52,7 +52,7 @@ module.exports = {
                         success(res, 200, 'Display All Menu Success', pagination, arr)
                     } else {
                         // Kalau arraynya kosong
-                        success(res, 204, 'No data on this page', {}, {})
+                        error(res, 400, 'No data on this page', {}, {})
                     }
                 })
                 .catch((err) => {
@@ -94,7 +94,7 @@ module.exports = {
             modelAddMenus(data)
                 .then(() => {
                     // Kalau berhasil menambahkan data
-                    success(res, 201, 'Add Menu Successfull', {}, {})
+                    success(res, 200, 'Add Menu Successfull', {}, {})
                 })
                 .catch((err) => {
                     // Kalau dari model ada trouble
@@ -183,7 +183,7 @@ module.exports = {
                 .then((response) => {
                     if (response.affectedRows != 0) {
                         // Kalau ada data yang terubah
-                        success(res, 201, 'Menu Patched!', {}, {})
+                        success(res, 200, 'Menu Patched!', {}, {})
                     } else {
                         // Kalau tidak ada data yang berubah
                         error(res, 400, 'Nothing Patched, Wrong ID!', {}, {})

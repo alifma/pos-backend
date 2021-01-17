@@ -6,7 +6,9 @@ const {
     modelPostOrders,
     modelDeleteDetails,
     modelUpdateDetails,
-    modelTotalOrders
+    modelTotalOrders,
+    modelTotalRange,
+    modelTotalIncome
 } = require('../models/orders')
 
 // Moment JS
@@ -27,13 +29,16 @@ module.exports = {
         const limit = req.query.limit ? req.query.limit : '5'
         const offset = page === 1 ? 0 : (page - 1) * limit
         const sort = req.query.sort ? (req.query.sort).toLowerCase() : 'asc'
+        const range = req.query.range ? (req.query.range).toUpperCase() : 'YEAR'
         const availSort = ['asc', 'desc']
         const total = await modelTotalOrders()
+        const allIncome = await modelTotalIncome()
+        const todays = await modelTotalRange('DAY')
         if (isNaN(page) || availSort.includes(sort.toLowerCase()) == false || isNaN(limit)) {
             //   Kalau parameter ada yang salah
             error(res, 400, "Wrong Parameter Type", {}, {})
         } else {
-            modelAllOrders(offset, limit, sort)
+            modelAllOrders(offset, limit, sort, range)
                 .then((response) => {
                     if (response.length != 0) {
                         const arr = response.map(i => ({
@@ -48,12 +53,14 @@ module.exports = {
                             limit: limit,
                             totalInvoices: total[0].total,
                             totalPage: Math.ceil(total[0].total / limit),
+                            totalIncome: Number(allIncome[0].totalIncome),
+                            todaysIncome: Number(todays[0].totalIncome)
                         }
                         // Kalau hasilnya bukan array kosong
                         success(res, 200, 'Display All Order Success', pagination, arr)
                     } else {
                         // Kalau hasilnya array kosong
-                        success(res, 204, 'No data on this page', {}, {})
+                        error(res, 400, 'No data on this page', {}, {})
                     }
                 })
                 .catch((err) => {
@@ -76,7 +83,7 @@ module.exports = {
                         success(res, 200, `Show Detail Data Success`, {}, response)
                     } else {
                         // kalau tidak ada datanya
-                        error(res, 404, `Data Not Found, Wrong Invoice`, {}, {})
+                        error(res, 400, `Data Not Found, Wrong Invoice`, {}, {})
                     }
                 })
                 .catch((err) => {
@@ -113,19 +120,19 @@ module.exports = {
     // Tambahkan Order baru
     postOrders: (req, res) => {
         const data = req.body
-        if (data.length != 0) {
+        if (data.length == 0 || data[0].inv == '' || data[0].cashier == '') {
+            // Kalau ada data yang kosong
+            error(res, 400, "Please Fill All Field", {}, {})
+        } else {
             modelPostOrders(data)
                 .then(() => {
                     // Kalau berhasil menambahkan
-                    success(res, 201, "Add Order Success", {}, {})
+                    success(res, 200, "Add Order Success", {}, {})
                 })
                 .catch((err) => {
                     // Kalau ada error dari model
                     error(res, 500, `Server Side Error, ${err.message}`, {}, {})
                 })
-        } else {
-            // Kalau ada data yang kosong
-            error(res, 400, "Please Fill All Field", {}, {})
         }
     },
 
@@ -172,7 +179,7 @@ module.exports = {
                 .then((response) => {
                     if (response.affectedRows != 0) {
                         // Kalau berhasil mengupdate
-                        success(res, 201, "Update Order Success", {}, {})
+                        success(res, 200, "Update Order Success", {}, {})
                     } else {
                         // Kalau salah ID hapus
                         error(res, 400, "Nothing Updated, Wrong ID", {}, {})

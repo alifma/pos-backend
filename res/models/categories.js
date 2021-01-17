@@ -5,9 +5,9 @@ const connection = require('../config/database')
 module.exports = {
 
     // Tampilkan Semua Kategori
-    modelAllCtgry: () => {
+    modelAllCtgry: (status) => {
         return new Promise((resolve, reject) => {
-            connection.query(`SELECT * FROM t_category WHERE isReady=1`, (error, result) => {
+            connection.query(`SELECT * FROM t_category WHERE isReady LIKE '${status}'`, (error, result) => {
                 if (error) {
                     reject(new Error(error))
                 } else {
@@ -42,6 +42,7 @@ module.exports = {
             })
         })
     },
+    
 
     // Tambahkan Kategori Baru
     modelAddCtgry: (data) => {
@@ -72,7 +73,7 @@ module.exports = {
     // Total Menu
     modelTotalCtgry: () => {
         return new Promise((resolve, reject) => {
-            connection.query(`SELECT COUNT(id) as total FROM t_category`,
+            connection.query(`SELECT COUNT(id) as total FROM t_category WHERE isReady=1`,
                 (error, result) => {
                     if (error) {
                         reject(new Error(error))

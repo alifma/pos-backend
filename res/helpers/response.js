@@ -7,7 +7,7 @@ module.exports = {
             code: rescode,
             msg: message,
             pagination,
-            data: arr
+            data: arr,
         })
     },
 

@@ -22,7 +22,7 @@ module.exports = {
     modelDetailMenus: (id) => {
         return new Promise((resolve, reject) => {
             // connection.query(`SELECT * FROM t_menu WHERE id=${id}`, (error, result) => {
-            connection.query(`SELECT t_menu.id, t_menu.name as name, t_category.name as category, t_menu.price, t_menu.image, t_menu.isReady,t_menu.created_at, t_menu.updated_at
+            connection.query(`SELECT t_menu.id, t_menu.name as name, t_category.name as category, t_menu.category_id,t_menu.price, t_menu.image, t_menu.isReady,t_menu.created_at, t_menu.updated_at
             FROM t_menu LEFT JOIN t_category ON t_menu.category_id = t_category.id WHERE t_menu.id=${id}`, (error, result) => {
                 if (error) {
                     reject(new Error(error))
@@ -91,7 +91,7 @@ module.exports = {
     // Total Menu
     modelTotalMenus: () => {
         return new Promise((resolve, reject) => {
-            connection.query(`SELECT COUNT(id) as total FROM t_menu`,
+            connection.query(`SELECT COUNT(id) as total FROM t_menu WHERE isReady=1`,
                 (error, result) => {
                     if (error) {
                         reject(new Error(error))
