@@ -88,7 +88,7 @@ module.exports = {
         })
     },
 
-    // Total Menu
+    // Total Menu Aktif
     modelTotalMenus: () => {
         return new Promise((resolve, reject) => {
             connection.query(`SELECT COUNT(id) as total FROM t_menu WHERE isReady=1`,
@@ -101,8 +101,7 @@ module.exports = {
                 })
         })
     },
-    // Total Result Menu
-    // Total Menu
+    // Total Menu Sesuai Query
     modelTotalResult: (name) => {
         return new Promise((resolve, reject) => {
             connection.query(`SELECT COUNT(id) as total FROM t_menu WHERE name LIKE '%${name}%' AND isReady=1`,

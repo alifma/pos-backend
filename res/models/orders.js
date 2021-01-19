@@ -90,7 +90,7 @@ module.exports = {
         })
     },
 
-    // Total Order
+    // Banyaknya Order yang Terjadi
     modelTotalOrders: (range) => {
         return new Promise((resolve, reject) => {
             connection.query(`SELECT COUNT(DISTINCT inv) as total FROM t_order WHERE created_at BETWEEN date_sub(now(),INTERVAL 1 ${range}) and now()`,
@@ -104,7 +104,7 @@ module.exports = {
         })
     },
 
-    // Total Income
+    // Total Pemasukan dari Awal
     modelTotalIncome: () => {
         return new Promise((resolve, reject) => {
             connection.query(`SELECT sum(t_order.amount * t_menu.price) as totalIncome FROM t_order LEFT JOIN t_menu ON t_order.menu_id = t_menu.id`,
@@ -118,6 +118,7 @@ module.exports = {
         })
     },
 
+    // Total Pemasukan Sesuai Range
     modelTotalRange: (range) => {
         return new Promise((resolve, reject) => {
             connection.query(`SELECT sum(t_order.amount * t_menu.price) as totalIncome FROM t_order LEFT JOIN t_menu ON t_order.menu_id = t_menu.id WHERE t_order.created_at BETWEEN date_sub(now(),INTERVAL 1 ${range}) and now()`,
@@ -130,6 +131,4 @@ module.exports = {
                 })
         })
     },
-
-
 }

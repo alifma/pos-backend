@@ -201,7 +201,7 @@ module.exports = {
                     // Kalau tipe data ada yang salah
                     error(res, 400, `Wrong Data Type Given, ${err.message}`, {}, {})
                 })
-        } catch (error) {
+        } catch (err) {
             // Kalau ada masalah lainnya
             error(res, 500, `Internal Server Error, ${err.message}`, {}, {})
         }

@@ -25,7 +25,7 @@ module.exports = {
             // Ambil data dari query
             const deleteStatus = req.query.ready ? req.query.ready : 1
             // Ambil data dari Model dengan Await
-            totalCategory = await modelTotalCtgry()
+            const totalCategory = await modelTotalCtgry()
             modelAllCtgry(deleteStatus)
                 .then((response) => {
                     // Kalau berhasil menambahkan kategori
