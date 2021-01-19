@@ -7,6 +7,7 @@ const {
     modelUpdateMenus,
     modelPatchMenus,
     modelTotalMenus,
+    modelTotalResult,
 } = require('../models/menus')
 
 // MomentJS
@@ -28,6 +29,7 @@ module.exports = {
         const orderby = req.query.order ? req.query.order : 'id'
         const sort = req.query.sort ? req.query.sort : 'ASC'
         const total = await modelTotalMenus()
+        const totalResult = await modelTotalResult(name)
         // Available Value
         const availOrder = ['name', 'price', 'id', 'created_at', 'category_id']
         const availSort = ['asc', 'desc']
@@ -46,10 +48,11 @@ module.exports = {
                             page: page,
                             limit: limit,
                             totalMenus: total[0].total,
-                            totalPage: Math.ceil(total[0].total / limit),
+                            totalResult: totalResult[0].total,
+                            pageResult: Math.ceil(totalResult[0].total/limit),
                         }
                         // Kalau arraynya ada isinya
-                        success(res, 200, 'Display All Menu Success', pagination, arr)
+                        success(res, 200, 'Display Menu Success', pagination, arr)
                     } else {
                         // Kalau arraynya kosong
                         error(res, 400, 'No data on this page', {}, {})

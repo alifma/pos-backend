@@ -91,9 +91,9 @@ module.exports = {
     },
 
     // Total Order
-    modelTotalOrders: () => {
+    modelTotalOrders: (range) => {
         return new Promise((resolve, reject) => {
-            connection.query(`SELECT COUNT(DISTINCT inv) as total FROM t_order`,
+            connection.query(`SELECT COUNT(DISTINCT inv) as total FROM t_order WHERE created_at BETWEEN date_sub(now(),INTERVAL 1 ${range}) and now()`,
                 (error, result) => {
                     if (error) {
                         reject(new Error(error))

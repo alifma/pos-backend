@@ -30,11 +30,12 @@ module.exports = {
         const offset = page === 1 ? 0 : (page - 1) * limit
         const sort = req.query.sort ? (req.query.sort).toLowerCase() : 'asc'
         const range = req.query.range ? (req.query.range).toUpperCase() : 'YEAR'
-        const availSort = ['asc', 'desc']
-        const total = await modelTotalOrders()
+        const total = await modelTotalOrders(range)
         const allIncome = await modelTotalIncome()
-        const todays = await modelTotalRange('DAY')
-        if (isNaN(page) || availSort.includes(sort.toLowerCase()) == false || isNaN(limit)) {
+        const ttlRange = await modelTotalRange(range)
+        const availSort = ['asc', 'desc']
+        const availRange = ['day', 'week', 'month', 'year']
+        if (isNaN(page) || availSort.includes(sort.toLowerCase()) == false || isNaN(limit) || availRange.includes(range.toLowerCase()) == false) {
             //   Kalau parameter ada yang salah
             error(res, 400, "Wrong Parameter Type", {}, {})
         } else {
@@ -54,7 +55,7 @@ module.exports = {
                             totalInvoices: total[0].total,
                             totalPage: Math.ceil(total[0].total / limit),
                             totalIncome: Number(allIncome[0].totalIncome),
-                            todaysIncome: Number(todays[0].totalIncome)
+                            todaysIncome: Number(ttlRange[0].totalIncome)
                         }
                         // Kalau hasilnya bukan array kosong
                         success(res, 200, 'Display All Order Success', pagination, arr)

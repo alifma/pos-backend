@@ -100,6 +100,20 @@ module.exports = {
                     }
                 })
         })
+    },
+    // Total Result Menu
+    // Total Menu
+    modelTotalResult: (name) => {
+        return new Promise((resolve, reject) => {
+            connection.query(`SELECT COUNT(id) as total FROM t_menu WHERE name LIKE '%${name}%' AND isReady=1`,
+                (error, result) => {
+                    if (error) {
+                        reject(new Error(error))
+                    } else {
+                        resolve(result)
+                    }
+                })
+        })
     }
 
 }
