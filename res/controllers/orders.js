@@ -22,23 +22,19 @@ const {
 
 // Export Semua Method
 module.exports = {
-
     // Tampilkan Semua Order Berdasarkan Invoices
     getAllOrders: async (req, res) => {
-        const page = req.query.page ? req.query.page : '1'
-        const limit = req.query.limit ? req.query.limit : '5'
-        const offset = page === 1 ? 0 : (page - 1) * limit
-        const sort = req.query.sort ? (req.query.sort).toLowerCase() : 'asc'
-        const range = req.query.range ? (req.query.range).toUpperCase() : 'YEAR'
-        const total = await modelTotalOrders(range)
-        const allIncome = await modelTotalIncome()
-        const ttlRange = await modelTotalRange(range)
-        const availSort = ['asc', 'desc']
-        const availRange = ['day', 'week', 'month', 'year']
-        if (isNaN(page) || availSort.includes(sort.toLowerCase()) == false || isNaN(limit) || availRange.includes(range.toLowerCase()) == false) {
-            //   Kalau parameter ada yang salah
-            error(res, 400, "Wrong Parameter Type", {}, {})
-        } else {
+        try {
+            // Ambil Query dari URL
+            const sort = req.query.sort ? (req.query.sort).toUpperCase() : 'ASC'
+            const range = req.query.range ? (req.query.range).toUpperCase() : 'YEAR'
+            const page = req.query.page ? req.query.page : '1'
+            const limit = req.query.limit ? req.query.limit : '5'
+            const offset = page === 1 ? 0 : (page - 1) * limit
+            // Ambil Dari Modal pakai Await
+            const allIncome = await modelTotalIncome()
+            const total = await modelTotalOrders(range)
+            const ttlRange = await modelTotalRange(range)
             modelAllOrders(offset, limit, sort, range)
                 .then((response) => {
                     if (response.length != 0) {
@@ -65,22 +61,24 @@ module.exports = {
                     }
                 })
                 .catch((err) => {
-                    // Kalau ada salah di model
-                    error(res, 500, `Server Side Error, ${err.message}`, {}, {})
+                    // Kalau Ada salah di Query
+                    error(res, 400, `Wrong Query Given, ${err.message}`, {}, {})
                 })
+        } catch (err) {
+            // Kalau ada salah lainnya
+            error(res, 500, `Internal Server Error, ${err.message}`, {}, {})
         }
     },
 
     // Tampilkan Detail Item Tiap Invoices
     getDetailOrders: (req, res) => {
-        const inv = req.params.inv
-        if (isNaN(inv)) {
-            error(res, "Wrong Invoice Type", {}, {})
-        } else {
+        try {
+            // Ambil data dari parameter
+            const inv = req.params.inv
             modelDetailOrders(inv)
                 .then((response) => {
                     if (response.length != 0) {
-                        // Kalau ada data yang bisa ditampilkan
+                        // Kalau ada datanya
                         success(res, 200, `Show Detail Data Success`, {}, response)
                     } else {
                         // kalau tidak ada datanya
@@ -88,19 +86,19 @@ module.exports = {
                     }
                 })
                 .catch((err) => {
-                    // Kalau ada error dari model
-                    error(res, 500, `Server Side Error, ${err.message}`, {}, {})
+                    // Kalau salah parameternya
+                    error(res, 400, `Wrong Parameter Type, ${err.message}`, {}, {})
                 })
+        } catch (err) {
+            // Kalau ada salah lainnya
+            error(res, 500, `Internal Server Error, ${err.message}`, {}, {})
         }
     },
 
     // Hapus semua order berdasarkan invoice
     deleteOrders: (req, res) => {
-        const inv = req.params.inv
-        if (isNaN(inv)) {
-            // Kalau tipe invoice bukan number
-            error(res, 400, "Wrong Invoice Type", {}, {})
-        } else {
+        try {
+            const inv = req.params.inv
             modelDeleteOrders(inv)
                 .then((response) => {
                     if (response.affectedRows != 0) {
@@ -112,42 +110,47 @@ module.exports = {
                     }
                 })
                 .catch((err) => {
-                    // Kalau ada error dari model
-                    error(res, 500, `Server Side Error, ${err.message}`, {}, {})
+                    // Kalau ada salah di parameternya
+                    error(res, 400, `Wrong Parameter Type, ${err.message}`, {}, {})
                 })
+        } catch (err) {
+            // Kalau ada salah lainnya
+            error(res, 500, `Internal Server Error, ${err.message}`, {}, {})
         }
     },
 
     // Tambahkan Order baru
     postOrders: (req, res) => {
-        const data = req.body
-        if (data.length == 0 || data[0].inv == '' || data[0].cashier == '') {
-            // Kalau ada data yang kosong
-            error(res, 400, "Please Fill All Field", {}, {})
-        } else {
-            modelPostOrders(data)
-                .then(() => {
-                    // Kalau berhasil menambahkan
-                    success(res, 200, "Add Order Success", {}, {})
-                })
-                .catch((err) => {
-                    // Kalau ada error dari model
-                    error(res, 500, `Server Side Error, ${err.message}`, {}, {})
-                })
+        try {
+            const data = req.body
+            if (data.length != 0 && data[0].inv != '' && data[0].cashier != '') {
+                modelPostOrders(data)
+                    .then(() => {
+                        // Kalau berhasil menambahkan
+                        success(res, 200, "Add Order Success", {}, {})
+                    })
+                    .catch((err) => {
+                        // Kalau ada tipe data yang salah
+                        error(res, 400, `Wrong Data Type Given, ${err.message}`, {}, {})
+                    })
+            } else {
+                // Kalau ada data yang kosong
+                error(res, 400, "Please Fill All Field", {}, {})
+            }
+        } catch (err) {
+            // Kalau ada salah lainnya
+            error(res, 500, `Internal Server Error, ${err.message}`, {}, {})
         }
     },
 
     // Hapus item di dalam invoice berdasarkan ID
     deleteOrdersDtl: (req, res) => {
-        const id = req.query.id
-        if (isNaN(id)) {
-            // Kalau parameter ID salah
-            error(res, 400, "Wrong ID Type", {}, {})
-        } else {
+        try {
+            const id = req.query.id
             modelDeleteDetails(id)
                 .then((response) => {
                     if (response.affectedRows != 0) {
-                        // Kalau berhaisl menghapus deetail
+                        // Kalau berhasil menghapus detail
                         success(res, 200, "Delete Order by Detail Success", {}, {})
                     } else {
                         // Kalau gagal menghapus karena salah ID
@@ -155,27 +158,24 @@ module.exports = {
                     }
                 })
                 .catch((err) => {
-                    // Kalau ada salah dari model
-                    error(res, 500, `Server Side Error, ${err.message}`, {}, {})
+                    // Kalau ada salah tipe data
+                    error(res, 400, `Wrong Parameter Type, ${err.message}`, {}, {})
                 })
+        } catch (err) {
+            // Kalau ada salah lainnya
+            error(res, 500, `Internal Server Error, ${err.message}`, {}, {})
         }
     },
 
     // Perbarui Item di dalam inovice berdasarkan id
     updateOrdersDtl: (req, res) => {
-        const id = req.params.id
-        const currDate = moment().format('YYYY-MM-DDThh:mm:ss.ms');
-        const data = {
-            ...req.body,
-            "updated_at": currDate
-        }
-        if (isNaN(id)) {
-            // Kalau idnya salah
-            error(res, 400, "Wrong ID Type", {}, {})
-        } else if (data.length == 0) {
-            // Kalau ada data yang kosong
-            error(res, 400, "Please Fill All Field", {}, {})
-        } else {
+        try {
+            const id = req.params.id
+            const currDate = moment().format('YYYY-MM-DDThh:mm:ss.ms')
+            const data = {
+                ...req.body,
+                "updated_at": currDate
+            }
             modelUpdateDetails(data, id)
                 .then((response) => {
                     if (response.affectedRows != 0) {
@@ -188,9 +188,11 @@ module.exports = {
                 })
                 .catch((err) => {
                     // Kalau misalkan ada error dari model
-                    error(res, 500, `Server Side Error, ${err.message}`, {}, {})
+                    error(res, 400, `Wrong Data Type Given, ${err.message}`, {}, {})
                 })
+        } catch (err) {
+            // Kalau ada salah lainnya
+            error(res, 500, `Internal Server Error, ${err.message}`, {}, {})
         }
     }
-
 }

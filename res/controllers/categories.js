@@ -19,31 +19,36 @@ const {
 
 // Export semua Method
 module.exports = {
-
     // Tampilkan Semua Kategori
     getAllCtgry: async (req, res) => {
-        totalCategory = await modelTotalCtgry()
-        const deleteStatus = req.query.ready?req.query.ready:1 
-        modelAllCtgry(deleteStatus)
-            .then((response) => {
-                success(res, 200, "Show All Category Success", totalCategory[0], response)
-            })
-            .catch((err) => {
-                error(res, 500, `Server Side Error, ${err.message}`, {}, {})
-            })
+        try {
+            // Ambil data dari query
+            const deleteStatus = req.query.ready ? req.query.ready : 1
+            // Ambil data dari Model dengan Await
+            totalCategory = await modelTotalCtgry()
+            modelAllCtgry(deleteStatus)
+                .then((response) => {
+                    // Kalau berhasil menambahkan kategori
+                    success(res, 200, "Show All Category Success", totalCategory[0], response)
+                })
+                .catch((err) => {
+                    // Kalau Ada salah di Query
+                    error(res, 400, `Wrong Query Given, ${err.message}`, {}, {})
+                })
+        } catch (err) {
+            // Kalau ada salah lainnya
+            error(res, 500, `Internal Server Error, ${err.message}`, {}, {})
+        }
     },
 
     // Tampilkan Detail Kategori
     getDetailCtgry: (req, res) => {
-        const id = req.params.id
-        // Jika tipe ID Salah
-        if (isNaN(id)) {
-            error(res, 400, "Wrong ID Type", {}, {})
-        } else {
+        try {
+            const id = req.params.id
             modelDetailCtgry(id)
                 .then((response) => {
                     if (response.length != 0) {
-                        // Jika Hasilnya ada
+                        // Jika ada hasilnya
                         success(res, 200, "Show Detail Category Success", {}, response)
                     } else {
                         // Jika tidak ada hasilnya
@@ -51,20 +56,20 @@ module.exports = {
                     }
                 })
                 .catch((err) => {
-                    // Jika dari model tidak bisa display
-                    error(res, 500, `Server Side Error, ${err.message}`, {}, {})
+                    // Kalau Ada salah di Query
+                    error(res, 400, `Wrong Parameter Type, ${err.message}`, {}, {})
                 })
+        } catch (err) {
+            // Kalau ada salah lainnya
+            error(res, 500, `Internal Server Error, ${err.message}`, {}, {})
         }
     },
 
     // SoftDelete Kategori
     deleteCtgry: (req, res) => {
-        const currDate = moment().format('YYYY-MM-DDThh:mm:ss.ms');
-        const id = req.params.id
-        // Jika tipe ID salah
-        if (isNaN(id)) {
-            error(res, "Wrong ID Type", {}, {})
-        } else {
+        try {
+            const currDate = moment().format('YYYY-MM-DDThh:mm:ss.ms');
+            const id = req.params.id
             modelDeleteCtgry(id, currDate)
                 .then((response) => {
                     if (response.affectedRows != 0) {
@@ -76,58 +81,70 @@ module.exports = {
                     }
                 })
                 .catch((err) => {
-                    // Kalau dari model gagal display data
-                    error(res, 500, `Server Side Error, ${err.message}`, {}, {})
+                    // Kalau Ada salah di Query
+                    error(res, 400, `Wrong Parameter Type, ${err.message}`, {}, {})
                 })
+        } catch (err) {
+            // Kalau ada salah lainnya
+            error(res, 500, `Internal Server Error, ${err.message}`, {}, {})
         }
     },
 
     // Tambah Kategori Baru
     addCtgry: (req, res) => {
-        const data = req.body
-        if (data.length != 0) {
-            modelAddCtgry(data)
-                .then(() => {
-                    // Jika tambah data sukses
-                    success(res, 200, "Add Category Success", {}, {})
-                })
-                .catch((err) => {
-                    // Jika tambah data di modelnya gagal
-                    error(res, 500, `Server Side Error, ${err.message}`, {}, {})
-                })
-        } else {
-            // Jika inputnya kosong
-            error(res, 400, "Every field shouldn't empty", {}, {})
+        try {
+            const data = req.body
+            if (data.length != 0) {
+                modelAddCtgry(data)
+                    .then(() => {
+                        // Jika tambah data sukses
+                        success(res, 200, "Add Category Success", {}, {})
+                    })
+                    .catch((err) => {
+                        // Kalau ada tipe data yang salah
+                        error(res, 400, `Wrong Data Type Given, ${err.message}`, {}, {})
+                    })
+            } else {
+                // Jika inputnya kosong
+                error(res, 400, "Every field shouldn't empty", {}, {})
+            }
+        } catch (err) {
+            // Kalau ada salah lainnya
+            error(res, 500, `Internal Server Error, ${err.message}`, {}, {})
         }
     },
 
     // Perbarui Kategori
     updateCtgry: (req, res) => {
-        const currDate = moment().format('YYYY-MM-DDThh:mm:ss.ms');
-        const id = req.params.id
-        const data = {
-            ...req.body,
-            "updated_at": currDate
-        }
-        if (data.length != 0) {
-            modelUpdateCtgry(data, id)
-                .then((response) => {
-                    if (response.affectedRows != 0) {
-                        // Jika ada data terupdate
-                        success(res, 200, "Update Category Success", {}, {})
-                    } else {
-                        // Jikka tidak ada yang terupdate
-                        error(res, 400, "Nothing Updated, Wrong ID", {}, {})
-                    }
-                })
-                .catch((err) => {
-                    // Jika ada problem dari modelnya
-                    error(res, 500, `Server Side Error, ${err.message}`, {}, {})
-                })
-        } else {
-            // Jika inputnya kosong
-            error(res, 400, "Every field shouldn't empty", {}, {})
+        try {
+            const currDate = moment().format('YYYY-MM-DDThh:mm:ss.ms');
+            const id = req.params.id
+            const data = {
+                ...req.body,
+                "updated_at": currDate
+            }
+            if (data.length != 0) {
+                modelUpdateCtgry(data, id)
+                    .then((response) => {
+                        if (response.affectedRows != 0) {
+                            // Jika ada data terupdate
+                            success(res, 200, "Update Category Success", {}, {})
+                        } else {
+                            // Jikka tidak ada yang terupdate
+                            error(res, 400, "Nothing Updated, Wrong ID", {}, {})
+                        }
+                    })
+                    .catch((err) => {
+                        // Kalau ada tipe data yang salah
+                        error(res, 400, `Wrong Data Type Given, ${err.message}`, {}, {})
+                    })
+            } else {
+                // Jika inputnya kosong
+                error(res, 400, "Every field shouldn't empty", {}, {})
+            }
+        } catch (err) {
+            // Kalau ada salah lainnya
+            error(res, 500, `Internal Server Error, ${err.message}`, {}, {})
         }
     }
-
 }
