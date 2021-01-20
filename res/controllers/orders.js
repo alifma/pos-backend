@@ -34,7 +34,7 @@ module.exports = {
             // Ambil Dari Modal pakai Await
             const allIncome = await modelTotalIncome()
             const total = await modelTotalOrders(range)
-            const ttlRange = await modelTotalRange(range)
+            const ttlRange = await modelTotalRange('DAY')
             modelAllOrders(offset, limit, sort, range)
                 .then((response) => {
                     if (response.length != 0) {
@@ -46,27 +46,33 @@ module.exports = {
                             total: Number(i.total)
                         }))
                         const pagination = {
+                            // Halaman yang sedang diakses
                             page: page,
+                            // Batasan Banyaknya hasil per halaman
                             limit: limit,
+                            // Banyaknya Invoices yang terdaftar
                             totalInvoices: total[0].total,
+                            // Jumlah Halaman
                             totalPage: Math.ceil(total[0].total / limit),
+                            // Jumlah Total Pemasukan
                             totalIncome: Number(allIncome[0].totalIncome),
+                            // Jumlah Pemasukan Sesuai Range
                             todaysIncome: Number(ttlRange[0].totalIncome)
                         }
                         // Kalau hasilnya bukan array kosong
                         success(res, 200, 'Display All Order Success', pagination, arr)
                     } else {
                         // Kalau hasilnya array kosong
-                        error(res, 400, 'No data on this page', {}, {})
+                        error(res, 400, 'No data on this page', '0 Result', {})
                     }
                 })
                 .catch((err) => {
                     // Kalau Ada salah di Query
-                    error(res, 400, `Wrong Query Given, ${err.message}`, {}, {})
+                    error(res, 400, 'Wrong Query Given', err.message, {})
                 })
         } catch (err) {
             // Kalau ada salah lainnya
-            error(res, 500, `Internal Server Error, ${err.message}`, {}, {})
+            error(res, 500, 'Internal Server Error', err.message, {})
         }
     },
 
@@ -79,19 +85,19 @@ module.exports = {
                 .then((response) => {
                     if (response.length != 0) {
                         // Kalau ada datanya
-                        success(res, 200, `Show Detail Data Success`, {}, response)
+                        success(res, 200, 'Show Detail Data Success', {}, response)
                     } else {
                         // kalau tidak ada datanya
-                        error(res, 400, `Data Not Found, Wrong Invoice`, {}, {})
+                        error(res, 400, 'Data Not Found, Wrong Invoice', '0 Result', {})
                     }
                 })
                 .catch((err) => {
                     // Kalau salah parameternya
-                    error(res, 400, `Wrong Parameter Type, ${err.message}`, {}, {})
+                    error(res, 400, 'Wrong Parameter Type', err.message, {})
                 })
         } catch (err) {
             // Kalau ada salah lainnya
-            error(res, 500, `Internal Server Error, ${err.message}`, {}, {})
+            error(res, 500, 'Internal Server Error', err.message, {})
         }
     },
 
@@ -103,43 +109,54 @@ module.exports = {
                 .then((response) => {
                     if (response.affectedRows != 0) {
                         // Kalau ada yang terhapus
-                        success(res, 200, `Delete Order Sucess`, {}, {})
+                        success(res, 200, 'Delete Order Sucess', {}, {})
                     } else {
                         // Kalau tidak ada yang terhapus
-                        error(res, 400, `Nothing Deleted, Wrong Invoice`, {}, {})
+                        error(res, 400, 'Nothing Deleted, Wrong Invoice', '0 Result', {})
                     }
                 })
                 .catch((err) => {
                     // Kalau ada salah di parameternya
-                    error(res, 400, `Wrong Parameter Type, ${err.message}`, {}, {})
+                    error(res, 400, 'Wrong Parameter Type', err.message, {})
                 })
         } catch (err) {
             // Kalau ada salah lainnya
-            error(res, 500, `Internal Server Error, ${err.message}`, {}, {})
+            error(res, 500, 'Internal Server Error', err.message, {})
         }
     },
 
     // Tambahkan Order baru
     postOrders: (req, res) => {
         try {
+            // Ambil data dari body
             const data = req.body
-            if (data.length != 0 && data[0].inv != '' && data[0].cashier != '') {
+            // Inisialisasi Checker
+            let dataChecker = false
+            for(let i = 0; i<data.length;i++) {
+                if(data[i].menu_id && data[i].inv && data[i].cashier && data[i].price){
+                    dataChecker = true
+                }else{
+                    dataChecker = false
+                    break
+                }
+            }
+            if (dataChecker) {
                 modelPostOrders(data)
                     .then(() => {
                         // Kalau berhasil menambahkan
-                        success(res, 200, "Add Order Success", {}, {})
+                        success(res, 200, 'Add Order Success', {}, {})
                     })
                     .catch((err) => {
                         // Kalau ada tipe data yang salah
-                        error(res, 400, `Wrong Data Type Given, ${err.message}`, {}, {})
+                        error(res, 400, 'Wrong Data Type Given', err.message, {})
                     })
             } else {
                 // Kalau ada data yang kosong
-                error(res, 400, "Please Fill All Field", {}, {})
+                error(res, 400, 'Please Fill All Field', 'Empty field found', {})
             }
         } catch (err) {
             // Kalau ada salah lainnya
-            error(res, 500, `Internal Server Error, ${err.message}`, {}, {})
+            error(res, 500, 'Internal Server Error', err.message, {})
         }
     },
 
@@ -151,19 +168,19 @@ module.exports = {
                 .then((response) => {
                     if (response.affectedRows != 0) {
                         // Kalau berhasil menghapus detail
-                        success(res, 200, "Delete Order by Detail Success", {}, {})
+                        success(res, 200, 'Delete Order by Detail Success', {}, {})
                     } else {
                         // Kalau gagal menghapus karena salah ID
-                        error(res, 400, "Nothing Deleted, Wrong ID", {}, {})
+                        error(res, 400, 'Nothing Deleted, Wrong ID', '0 Result', {})
                     }
                 })
                 .catch((err) => {
                     // Kalau ada salah tipe data
-                    error(res, 400, `Wrong Parameter Type, ${err.message}`, {}, {})
+                    error(res, 400, 'Wrong Parameter Type', err.message, {})
                 })
         } catch (err) {
             // Kalau ada salah lainnya
-            error(res, 500, `Internal Server Error, ${err.message}`, {}, {})
+            error(res, 500, 'Internal Server Error', err.message, {})
         }
     },
 
@@ -174,25 +191,25 @@ module.exports = {
             const currDate = moment().format('YYYY-MM-DDThh:mm:ss.ms')
             const data = {
                 ...req.body,
-                "updated_at": currDate
+                'updated_at': currDate
             }
             modelUpdateDetails(data, id)
                 .then((response) => {
                     if (response.affectedRows != 0) {
                         // Kalau berhasil mengupdate
-                        success(res, 200, "Update Order Success", {}, {})
+                        success(res, 200, 'Update Order Success', {}, {})
                     } else {
                         // Kalau salah ID hapus
-                        error(res, 400, "Nothing Updated, Wrong ID", {}, {})
+                        error(res, 400, 'Nothing Updated, Wrong ID', '0 Result', {})
                     }
                 })
                 .catch((err) => {
                     // Kalau misalkan ada error dari model
-                    error(res, 400, `Wrong Data Type Given, ${err.message}`, {}, {})
+                    error(res, 400, 'Wrong Data Type Given', err.message, {})
                 })
         } catch (err) {
             // Kalau ada salah lainnya
-            error(res, 500, `Internal Server Error, ${err.message}`, {}, {})
+            error(res, 500, 'Internal Server Error', err.message, {})
         }
     }
 }

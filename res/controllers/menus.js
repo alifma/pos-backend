@@ -54,16 +54,16 @@ module.exports = {
                         success(res, 200, 'Display Menu Success', pagination, arr)
                     } else {
                         // Kalau arraynya kosong
-                        error(res, 400, 'No data on this page', {}, {})
+                        error(res, 400, 'No data on this page', '0 Result', {})
                     }
                 })
                 .catch((err) => {
                     // Kalau ada problem dari query nya
-                    error(res, 400, `Wrong Query Given, ${err.message}`, {}, {})
+                    error(res, 400, 'Wrong Query Given', err.message, {})
                 })
         } catch (err) {
             // Kalau ada masalah lainnya
-            error(res, 500, `Internal Server Error, ${err.message}`, {}, {})
+            error(res, 500, 'Internal Server Error', err.message, {})    
         }
     },
 
@@ -79,16 +79,16 @@ module.exports = {
                         success(res, 200, 'Display Detail Menu Success', {}, response)
                     } else {
                         // Kalau responsenya kosong
-                        error(res, 400, 'Data Not Found, Wrong ID', {}, {})
+                        error(res, 400, 'Data Not Found, Wrong ID', '0 Result', {})
                     }
                 })
                 .catch((err) => {
                     // Kalau Tipe ID Salah 
-                    error(res, 400, `Wrong Parameter Type Given, ${err.message}`, {}, {})
+                    error(res, 400, 'Wrong Parameter Type Given', err.message, {})
                 })
         } catch (err) {
             // Kalau ada masalah lainnya
-            error(res, 500, `Internal Server Error, ${err.message}`, {}, {})
+            error(res, 500, 'Internal Server Error', err.message, {})
         }
 
 
@@ -106,15 +106,15 @@ module.exports = {
                     })
                     .catch((err) => {
                         // Kalau tipe data ada yang salah
-                        error(res, 400, `Wrong Data Type Given, ${err.message}`, {}, {})
+                        error(res, 400, 'Wrong Data Type Given', err.message, {})
                     })
             } else {
                 // Kalau ada data yang kosong
-                error(res, 400, 'Please fill all field!', {}, {})
+                error(res, 400, 'Please fill all field!', 'Empty field found', {})
             }
         } catch (err) {
             // Kalau ada masalah lainnya
-            error(res, 500, `Internal Server Error, ${err.message}`, {}, {})
+            error(res, 500, 'Internal Server Error', err.message, {})
         }
 
     },
@@ -136,11 +136,11 @@ module.exports = {
                 })
                 .catch((err) => {
                     // Kalau Tipe ID Salah 
-                    error(res, 400, `Wrong Parameter Type Given, ${err.message}`, {}, {})
+                    error(res, 400, 'Wrong Parameter Type Given', err.message, {})
                 })
         } catch (err) {
             // Kalau ada masalah lainnya
-            error(res, 500, `Internal Server Error, ${err.message}`, {}, {})
+            error(res, 500, 'Internal Server Error', err.message, {})
         }
     },
 
@@ -166,15 +166,15 @@ module.exports = {
                     })
                     .catch((err) => {
                         // Kalau tipe data ada yang salah
-                        error(res, 400, `Wrong Data Type Given, ${err.message}`, {}, {})
+                        error(res, 400, 'Wrong Data Type Given', err.message, {})
                     })
             } else {
                 // Kalau ada data yang kosong
-                error(res, 400, 'Please Fill All Field!', {}, {})
+                error(res, 400, 'Please Fill All Field!', 'Empty field found', {})
             }
         } catch (err) {
             // Kalau ada masalah lainnya
-            error(res, 500, `Internal Server Error, ${err.message}`, {}, {})
+            error(res, 500, 'Internal Server Error', err.message, {})
         }
     },
 
@@ -194,16 +194,16 @@ module.exports = {
                         success(res, 200, 'Patch Menu Success', {}, {})
                     } else {
                         // Kalau tidak ada data yang berubah
-                        error(res, 400, 'Nothing Patched, Wrong ID', {}, {})
+                        error(res, 400, 'Nothing Patched, Wrong ID', '0 Result', {})
                     }
                 })
                 .catch((err) => {
                     // Kalau tipe data ada yang salah
-                    error(res, 400, `Wrong Data Type Given, ${err.message}`, {}, {})
+                    error(res, 400, 'Wrong Data Type Given', err.message, {})
                 })
         } catch (err) {
             // Kalau ada masalah lainnya
-            error(res, 500, `Internal Server Error, ${err.message}`, {}, {})
+            error(res, 500, 'Internal Server Error', err.message, {})
         }
     }
 }

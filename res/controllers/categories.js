@@ -25,19 +25,23 @@ module.exports = {
             // Ambil data dari query
             const deleteStatus = req.query.ready ? req.query.ready : 1
             // Ambil data dari Model dengan Await
-            const totalCategory = await modelTotalCtgry()
+            const totalCategory = await modelTotalCtgry(deleteStatus)
             modelAllCtgry(deleteStatus)
                 .then((response) => {
                     // Kalau berhasil menambahkan kategori
-                    success(res, 200, "Show All Category Success", totalCategory[0], response)
+                    if(response.length != 0){
+                        success(res, 200, 'Show All Category Success', totalCategory[0], response)
+                    }else{
+                        error(res, 400, 'No Data Found', '0 Result', {})
+                    }
                 })
                 .catch((err) => {
                     // Kalau Ada salah di Query
-                    error(res, 400, `Wrong Query Given, ${err.message}`, {}, {})
+                    error(res, 400, 'Wrong Query Given', err.message, {})
                 })
         } catch (err) {
             // Kalau ada salah lainnya
-            error(res, 500, `Internal Server Error, ${err.message}`, {}, {})
+            error(res, 500, 'Internal Server Error', err.message, {})
         }
     },
 
@@ -49,19 +53,19 @@ module.exports = {
                 .then((response) => {
                     if (response.length != 0) {
                         // Jika ada hasilnya
-                        success(res, 200, "Show Detail Category Success", {}, response)
+                        success(res, 200, 'Show Detail Category Success', {}, response)
                     } else {
                         // Jika tidak ada hasilnya
-                        error(res, 400, "Data Not Found, Wrong ID", {}, {})
+                        error(res, 400, 'Data Not Found, Wrong ID', '0 Result', {})
                     }
                 })
                 .catch((err) => {
                     // Kalau Ada salah di Query
-                    error(res, 400, `Wrong Parameter Type, ${err.message}`, {}, {})
+                    error(res, 400, 'Wrong Parameter Type', err.message , {})
                 })
         } catch (err) {
             // Kalau ada salah lainnya
-            error(res, 500, `Internal Server Error, ${err.message}`, {}, {})
+            error(res, 500, 'Internal Server Error', err.message, {})
         }
     },
 
@@ -74,19 +78,19 @@ module.exports = {
                 .then((response) => {
                     if (response.affectedRows != 0) {
                         // Kalau hasilnya bukan array kosong
-                        success(res, 200, "Delete Category Success", {}, {})
+                        success(res, 200, 'Delete Category Success', {}, {})
                     } else {
                         // Kalau hasilnya array kosong
-                        error(res, 400, "Nothing Deleted, Wrong ID", {}, {})
+                        error(res, 400, 'Nothing Deleted, Wrong ID', '0 Result', {})
                     }
                 })
                 .catch((err) => {
                     // Kalau Ada salah di Query
-                    error(res, 400, `Wrong Parameter Type, ${err.message}`, {}, {})
+                    error(res, 400, 'Wrong Parameter Type', err.message, {})
                 })
         } catch (err) {
             // Kalau ada salah lainnya
-            error(res, 500, `Internal Server Error, ${err.message}`, {}, {})
+            error(res, 500, 'Internal Server Error', err.message, {})
         }
     },
 
@@ -94,23 +98,23 @@ module.exports = {
     addCtgry: (req, res) => {
         try {
             const data = req.body
-            if (data.length != 0) {
+            if (data.name) {
                 modelAddCtgry(data)
                     .then(() => {
                         // Jika tambah data sukses
-                        success(res, 200, "Add Category Success", {}, {})
+                        success(res, 200, 'Add Category Success', {}, {})
                     })
                     .catch((err) => {
                         // Kalau ada tipe data yang salah
-                        error(res, 400, `Wrong Data Type Given, ${err.message}`, {}, {})
+                        error(res, 400, 'Wrong Data Type Given', err.message, {})
                     })
             } else {
                 // Jika inputnya kosong
-                error(res, 400, "Every field shouldn't empty", {}, {})
+                error(res, 400, 'Please Fill All Field', 'Empty field found', {})
             }
         } catch (err) {
             // Kalau ada salah lainnya
-            error(res, 500, `Internal Server Error, ${err.message}`, {}, {})
+            error(res, 500, 'Internal Server Error', err.message, {})
         }
     },
 
@@ -121,30 +125,30 @@ module.exports = {
             const id = req.params.id
             const data = {
                 ...req.body,
-                "updated_at": currDate
+                'updated_at': currDate
             }
             if (data.length != 0) {
                 modelUpdateCtgry(data, id)
                     .then((response) => {
                         if (response.affectedRows != 0) {
                             // Jika ada data terupdate
-                            success(res, 200, "Update Category Success", {}, {})
+                            success(res, 200, 'Update Category Success', {}, {})
                         } else {
                             // Jikka tidak ada yang terupdate
-                            error(res, 400, "Nothing Updated, Wrong ID", {}, {})
+                            error(res, 400, 'Nothing Updated, Wrong ID', {}, {})
                         }
                     })
                     .catch((err) => {
                         // Kalau ada tipe data yang salah
-                        error(res, 400, `Wrong Data Type Given, ${err.message}`, {}, {})
+                        error(res, 400, 'Wrong Data Type Given', err.message, {})
                     })
             } else {
                 // Jika inputnya kosong
-                error(res, 400, "Every field shouldn't empty", {}, {})
+                error(res, 400, 'Pleaas fill all Field', 'Empty field found', {})
             }
         } catch (err) {
             // Kalau ada salah lainnya
-            error(res, 500, `Internal Server Error, ${err.message}`, {}, {})
+            error(res, 500, 'Internal Server Error', err.message, {})
         }
     }
 }

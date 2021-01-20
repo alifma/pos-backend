@@ -12,11 +12,11 @@ module.exports = {
     },
 
     // Kalau ada error
-    error: (res, rescode, message, pagination, arr) => {
+    error: (res, rescode, message, sysMsg, arr) => {
         res.json({
             code: rescode,
             msg: message,
-            pagination,
+            systemMsg: sysMsg,
             data: arr
         })
     },

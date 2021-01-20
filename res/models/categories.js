@@ -7,7 +7,7 @@ module.exports = {
     // Tampilkan Semua Kategori
     modelAllCtgry: (status) => {
         return new Promise((resolve, reject) => {
-            connection.query(`SELECT * FROM t_category WHERE isReady LIKE '${status}'`, (error, result) => {
+            connection.query(`SELECT t_category.id, t_category.name, count(t_menu.id) as count, t_category.created_at, t_category.updated_at FROM t_category LEFT JOIN t_menu ON t_category.id = t_menu.category_ID WHERE t_category.isReady LIKE '${status}' GROUP BY t_category.id`, (error, result) => {
                 if (error) {
                     reject(new Error(error))
                 } else {
@@ -71,9 +71,9 @@ module.exports = {
     },
 
     // Total Menu
-    modelTotalCtgry: () => {
+    modelTotalCtgry: (status) => {
         return new Promise((resolve, reject) => {
-            connection.query(`SELECT COUNT(id) as total FROM t_category WHERE isReady=1`,
+            connection.query(`SELECT COUNT(id) as total FROM t_category WHERE isReady LIKE '%${status}%'`,
                 (error, result) => {
                     if (error) {
                         reject(new Error(error))
