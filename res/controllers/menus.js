@@ -24,15 +24,23 @@ module.exports = {
     getAllMenus: async (req, res) => {
         try {
             // Ambil Query dari URL
-            const name = req.query.name ? req.query.name : ''
             const limit = req.query.limit ? req.query.limit : '9'
             const page = req.query.page ? req.query.page : '1'
+            const name = req.query.name ? req.query.name : ''
             const offset = page === 1 ? 0 : (page - 1) * limit
             const orderby = req.query.order ? req.query.order : 'id'
             const sort = req.query.sort ? req.query.sort : 'ASC'
             // Ambil dari Modal pakai Await
             const total = await modelTotalMenus()
             const totalResult = await modelTotalResult(name)
+            const listPage = []
+            for(let i = 1; i <= Math.ceil(totalResult[0].total / limit); i++){
+                listPage.push('page='+i)
+            }
+            const listPages = []
+            for(let i = 1; i <= Math.ceil(totalResult[0].total / limit); i++){
+                listPages.push('?name='+name+'&limit='+limit+'&page='+i)
+            }
             modelAllMenus(name, offset, limit, orderby, sort)
                 .then((response) => {
                     if (response.length != 0) {
@@ -49,6 +57,8 @@ module.exports = {
                             totalResult: totalResult[0].total,
                             // Jumlah Page yang Sesuai Query
                             pageResult: Math.ceil(totalResult[0].total / limit),
+                            // Daftar Page Tersedia
+                            pagesList: listPages
                         }
                         // Kalau arraynya ada isinya
                         success(res, 200, 'Display Menu Success', pagination, arr)
@@ -98,7 +108,7 @@ module.exports = {
     addMenus: (req, res) => {
         try {
             const data = req.body
-            if (data.image && data.category_id && data.price && data.name) {
+            if (data.image && data.category_id && data.price && data.name && data.image != '' && data.category_id!='' && data.price!=0 && data.image!=0) {
                 modelAddMenus(data)
                     .then(() => {
                         // Kalau berhasil menambahkan data

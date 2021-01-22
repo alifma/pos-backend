@@ -10,7 +10,7 @@ module.exports = {
             connection.query(
                 `SELECT t_order.inv, t_order.cashier, t_order.created_at, 
                 GROUP_CONCAT(' ',t_menu.name,' x ',t_order.amount) as orders , sum(t_order.amount * t_order.price)*1.1 as total 
-                FROM t_order LEFT JOIN t_menu ON t_order.menu_id = t_menu.id WHERE t_order.created_at BETWEEN date_sub(now(),INTERVAL 1 ${range}) and now() GROUP BY inv ${sort} LIMIT ${offset}, ${limit}`, (error, result) => {
+                FROM t_order LEFT JOIN t_menu ON t_order.menu_id = t_menu.id WHERE t_order.created_at BETWEEN date_sub(now(),INTERVAL 1 ${range}) and now() GROUP BY t_order.inv ORDER BY t_order.created_at ${sort}  LIMIT ${offset}, ${limit}`, (error, result) => {
                     if (error) {
                         reject(new Error(error))
                     } else {
@@ -131,4 +131,33 @@ module.exports = {
                 })
         })
     },
+
+    // Yesterday Income
+    modelTotalYesterday: () => {
+        return new Promise((resolve, reject) => {
+            connection.query(`SELECT sum(t_order.amount * t_order.price) as yesterdayIncome FROM t_order LEFT JOIN t_menu ON t_order.menu_id = t_menu.id WHERE DATE(t_order.created_at) < CURDATE() && DATE(t_order.created_at) > CURRENT_DATE - 2`,
+                (error, result) => {
+                    if (error) {
+                        reject(new Error(error))
+                    } else {
+                        resolve(result)
+                    }
+                })
+        })
+    },
+
+    // Banyaknya Order yang Terjadi Minggu Kemarin
+    modelLastWeekOrders: () => {
+        return new Promise((resolve, reject) => {
+            connection.query(`SELECT COUNT(DISTINCT inv) as total FROM t_order WHERE DATE(t_order.created_at) < CURDATE()-7 && DATE(t_order.created_at) > CURRENT_DATE - 14`,
+                (error, result) => {
+                    if (error) {
+                        reject(new Error(error))
+                    } else {
+                        resolve(result)
+                    }
+                })
+        })
+    },
+
 }

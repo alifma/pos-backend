@@ -8,7 +8,9 @@ const {
     modelUpdateDetails,
     modelTotalOrders,
     modelTotalRange,
-    modelTotalIncome
+    modelTotalIncome,
+    modelLastWeekOrders,
+    modelTotalYesterday
 } = require('../models/orders')
 
 // Moment JS
@@ -26,8 +28,8 @@ module.exports = {
     getAllOrders: async (req, res) => {
         try {
             // Ambil Query dari URL
-            const sort = req.query.sort ? (req.query.sort).toUpperCase() : 'ASC'
-            const range = req.query.range ? (req.query.range).toUpperCase() : 'YEAR'
+            const sort = req.query.sort ? (req.query.sort).toUpperCase() : 'DESC'
+            const range = req.query.range ? (req.query.range).toUpperCase() : 'WEEK'
             const page = req.query.page ? req.query.page : '1'
             const limit = req.query.limit ? req.query.limit : '5'
             const offset = page === 1 ? 0 : (page - 1) * limit
@@ -35,6 +37,13 @@ module.exports = {
             const allIncome = await modelTotalIncome()
             const total = await modelTotalOrders(range)
             const ttlRange = await modelTotalRange('DAY')
+            const incomeYesterday = await modelTotalYesterday()
+            const ordersLastweek = await modelLastWeekOrders()
+            const ordersThisWeek = await modelTotalOrders('WEEK')
+            const listPage = []
+            for (let i = 1; i <=Math.ceil(total[0].total / limit);i++){
+                listPage.push('?range='+range+'&limit='+limit+'&sort='+sort+'&page='+i)
+            }
             modelAllOrders(offset, limit, sort, range)
                 .then((response) => {
                     if (response.length != 0) {
@@ -52,12 +61,24 @@ module.exports = {
                             limit: limit,
                             // Banyaknya Invoices yang terdaftar
                             totalInvoices: total[0].total,
+                            // Banyak Order Minggu ini
+                            thisWeekOrders: ordersThisWeek[0].total,
+                            // Banyak Order Minggu kemarin
+                            lastWeekOrders: ordersLastweek[0].total,
+                            // Order Gain Lastweek
+                            gainOrders: ((ordersThisWeek[0].total-ordersLastweek[0].total)/ordersLastweek[0].total)*100,
                             // Jumlah Halaman
                             totalPage: Math.ceil(total[0].total / limit),
                             // Jumlah Total Pemasukan
                             totalIncome: Number(allIncome[0].totalIncome),
-                            // Jumlah Pemasukan Sesuai Range
-                            todaysIncome: Number(ttlRange[0].totalIncome)
+                            // Jumlah Pemasukan Hari Ini
+                            todaysIncome: Number(ttlRange[0].totalIncome),
+                            // Jumlah Pemasukan Kemarin
+                            YesetdayIncome: Number(incomeYesterday[0].yesterdayIncome),
+                            // Kenaikan Penjualan
+                            gainIncome: (((ttlRange[0].totalIncome-incomeYesterday[0].yesterdayIncome)/incomeYesterday[0].yesterdayIncome)*100).toFixed(2),
+                            // Daftar Page Tersedia
+                            pageList: listPage
                         }
                         // Kalau hasilnya bukan array kosong
                         success(res, 200, 'Display All Order Success', pagination, arr)
