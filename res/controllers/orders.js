@@ -74,9 +74,9 @@ module.exports = {
                             // Jumlah Pemasukan Hari Ini
                             todaysIncome: Number(ttlRange[0].totalIncome),
                             // Jumlah Pemasukan Kemarin
-                            YesetdayIncome: Number(incomeYesterday[0].yesterdayIncome),
+                            YesterdayIncome: Number(incomeYesterday[0].yesterdayIncome),
                             // Kenaikan Penjualan
-                            gainIncome: (((ttlRange[0].totalIncome-incomeYesterday[0].yesterdayIncome)/incomeYesterday[0].yesterdayIncome)*100).toFixed(2),
+                            gainIncome: (((ttlRange[0].totalIncome-incomeYesterday[0].yesterdayIncome)/incomeYesterday[0].yesterdayIncome)*100).toFixed(2) == Infinity?0:(((ttlRange[0].totalIncome-incomeYesterday[0].yesterdayIncome)/incomeYesterday[0].yesterdayIncome)*100).toFixed(2) == Infinity,
                             // Daftar Page Tersedia
                             pageList: listPage
                         }
