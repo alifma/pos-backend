@@ -12,9 +12,12 @@ const {
     updateCtgry
 } = require('../controllers/categories')
 
+// Ambil dari Redis
+const {getRedisCtgry} = require('../helpers/redis/categories')
+
 // Atur route menus
 route
-    .get('/categories', authentication, getAllCtgry)                        //Admin & Cashier
+    .get('/categories', authentication, getRedisCtgry, getAllCtgry)         //Admin & Cashier
     .get('/categories/:id', authentication, authorizeAdmin, getDetailCtgry) //Admin
     .delete('/categories/:id', authentication, authorizeAdmin, deleteCtgry) //Admin
     .post('/categories', authentication, authorizeAdmin, addCtgry)          //Admin

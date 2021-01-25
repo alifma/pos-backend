@@ -5,7 +5,8 @@ const {
     modelDeleteCtgry,
     modelAddCtgry,
     modelUpdateCtgry,
-    modelTotalCtgry
+    modelTotalCtgry,
+    modelRedisCtgry
 } = require('../models/categories')
 
 // Moment Date
@@ -17,8 +18,24 @@ const {
     success
 } = require('../helpers/response')
 
+// Redis Client
+const redisClient = require('../config/redis')
+
 // Export semua Method
 module.exports = {
+    // Lempar All categories ke Redist
+    setRedisCtgry: () => {
+        // Panggil Models All Active
+        modelRedisCtgry().then((response) => {
+            // Ubah Response jadi String agar bisa disimpan di redis
+            const data = JSON.stringify(response)
+            // Set Data ke RedisClient
+            redisClient.set('dataCtgry', data)
+        }).catch((err) => {
+            // Kalua ada Error
+            error(res, 400, 'Internal Server Redis Error', err.message, {})
+        })
+    },
     // Tampilkan Semua Kategori
     getAllCtgry: async (req, res) => {
         try {
@@ -30,6 +47,7 @@ module.exports = {
                 .then((response) => {
                     // Kalau berhasil menambahkan kategori
                     if(response.length != 0){
+                        module.exports.setRedisCtgry()
                         success(res, 200, 'Show All Category Success', totalCategory[0], response)
                     }else{
                         error(res, 400, 'No Data Found', '0 Result', {})

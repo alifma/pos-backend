@@ -3,7 +3,19 @@ const connection = require('../config/database')
 
 // Export setiap methodnya
 module.exports = {
-
+    // Tangkap Semua Kategori untuk Redis
+    modelRedisCtgry: () => {
+        return new Promise((resolve, reject) => {
+            connection.query(`SELECT * from t_category`, (error, result) => {
+                if (error) {
+                    module.exports.setRedisCtgry()
+                    reject(new Error(error))
+                } else {
+                    resolve(result)
+                }
+            })
+        })
+    },
     // Tampilkan Semua Kategori
     modelAllCtgry: (status) => {
         return new Promise((resolve, reject) => {
