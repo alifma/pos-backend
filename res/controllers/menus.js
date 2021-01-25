@@ -26,10 +26,14 @@ const redisClient = require('../config/redis')
 module.exports = {
     // Lempar All menus ke Redist
     setRedisMenus: () => {
+        // Panggil Models All Active
         modelRedisMenus().then((response) => {
+            // Ubah Response jadi String agar bisa disimpan di redis
             const data = JSON.stringify(response)
+            // Set Data ke RedisClient
             redisClient.set('dataMenus', data)
         }).catch((err) => {
+            // Kalua ada Error
             error(res, 400, 'Internal Server Redis Error', err.message, {})
         })
     },
@@ -37,8 +41,8 @@ module.exports = {
     getAllMenus: async (req, res) => {
         try {
             // Ambil Query dari URL
-            const limit = req.query.limit ? req.query.limit : '9'
-            const page = req.query.page ? req.query.page : '1'
+            const limit = req.query.limit ? Number(req.query.limit) : 9
+            const page = req.query.page ? Number(req.query.page) : 1
             const name = req.query.name ? req.query.name : ''
             const offset = page === 1 ? 0 : (page - 1) * limit
             const orderby = req.query.order ? req.query.order : 'id'
@@ -46,10 +50,6 @@ module.exports = {
             // Ambil dari Modal pakai Await
             const total = await modelTotalMenus()
             const totalResult = await modelTotalResult(name)
-            const listPage = []
-            for(let i = 1; i <= Math.ceil(totalResult[0].total / limit); i++){
-                listPage.push('page='+i)
-            }
             const listPages = []
             for(let i = 1; i <= Math.ceil(totalResult[0].total / limit); i++){
                 listPages.push('?name='+name+'&limit='+limit+'&page='+i)
@@ -62,7 +62,9 @@ module.exports = {
                             isClicked: false
                         }))
                         const pagination = {
+                            // Halaman Saat Ini
                             page: page,
+                            // Limit Tiap Halaman
                             limit: limit,
                             // Semua menu yang aktif
                             totalMenus: total[0].total,
@@ -74,7 +76,7 @@ module.exports = {
                             pagesList: listPages
                         }
                         // Set data ke Redis
-                          module.exports.setRedisMenus()
+                        module.exports.setRedisMenus()
                         // Kalau arraynya ada isinya
                         success(res, 200, 'Display Menu Success', pagination, arr)
                     } else {

@@ -9,7 +9,7 @@ module.exports = {
     // Tangkap Semua data untuk Redist
     modelRedisMenus: () => {
         return new Promise((resolve, reject) => {
-            connection.query(`SELECT * FROM t_menu`, (error, result)=>{
+            connection.query(`SELECT * FROM t_menu WHERE isReady=1`, (error, result)=>{
                 if (error) {
                     reject(new Error(error))
                 }else{
