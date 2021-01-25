@@ -17,6 +17,7 @@ const bodyParser = require('body-parser')
 const routeMenu = require('./res/routes/menus')
 const routeOrder = require('./res/routes/orders')
 const routeCtgry = require('./res/routes/categories')
+const routeUsers = require('./res/routes/users')
 
 // Definsiikan response notFound
 const {
@@ -36,6 +37,7 @@ app.use(bodyParser.json())
 app.use(routeMenu)
 app.use(routeOrder)
 app.use(routeCtgry)
+app.use(routeUsers)
 
 // Jika Tidak ada Route yang Ditemukan
 app.use("/", (req, res) => {

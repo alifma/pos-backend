@@ -3,7 +3,17 @@ const connection = require('../config/database')
 
 // Export setiap methodnya
 module.exports = {
-
+    setDataRedis: () => {
+        return new Promise((resolve, reject) => {
+            connection.query(`SELECT * FROM t_menu`, (err, result)=>{
+                if (error) {
+                    reject(new Error(error))
+                }else{
+                    resolve(result)
+                }
+            })
+        })
+    },
     // Tampilkan Semua Menu Yang Aktif
     modelAllMenus: (name, offset, limit, orderby, sort) => {
         return new Promise((resolve, reject) => {
