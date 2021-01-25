@@ -10,12 +10,14 @@ const {
     updateMenus,
     patchMenus
 } = require('../controllers/menus')
+// Ambil dari Redis
+const {getRedisMenus} = require('../helpers/redis/menus')
 
 const {authentication, authorizeAdmin} = require('../helpers/middleware/auth')
 
 // Atur route menus
 route
-    .get('/menus', authentication, getAllMenus)                         //Admin & Cashier
+    .get('/menus', authentication, getRedisMenus, getAllMenus)          //Admin & Cashier
     .get('/menus/:id', authentication, getDetailMenus)                  //Admin & Cashier
     .post('/menus', authentication,authorizeAdmin, addMenus)            //Admin
     .delete('/menus/:id', authentication, authorizeAdmin, deleteMenus)  //Admin

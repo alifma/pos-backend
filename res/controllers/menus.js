@@ -8,6 +8,7 @@ const {
     modelPatchMenus,
     modelTotalMenus,
     modelTotalResult,
+    modelRedisMenus
 } = require('../models/menus')
 
 // MomentJS
@@ -19,7 +20,19 @@ const {
     success
 } = require('../helpers/response')
 
+// Redis Client
+const redisClient = require('../config/redis')
+
 module.exports = {
+    // Lempar All menus ke Redist
+    setRedisMenus: () => {
+        modelRedisMenus().then((response) => {
+            const data = JSON.stringify(response)
+            redisClient.set('dataMenus', data)
+        }).catch((err) => {
+            error(res, 400, 'Internal Server Redis Error', err.message, {})
+        })
+    },
     // Tampilkan Semua Menu yang aktif
     getAllMenus: async (req, res) => {
         try {
@@ -60,6 +73,8 @@ module.exports = {
                             // Daftar Page Tersedia
                             pagesList: listPages
                         }
+                        // Set data ke Redis
+                          module.exports.setRedisMenus()
                         // Kalau arraynya ada isinya
                         success(res, 200, 'Display Menu Success', pagination, arr)
                     } else {
