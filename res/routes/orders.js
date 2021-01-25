@@ -1,6 +1,7 @@
 // Tambahkan Route dari Express
 const express = require('express')
 const route = express.Router()
+const {authentication, authorizeAdmin, authorizeCashier} = require('../helpers/middleware/auth')
 // Ambil Method dari Controller Orders
 const {
     getAllOrders,
@@ -13,11 +14,11 @@ const {
 
 // Atur route orders
 route
-    .get('/orders', getAllOrders)
-    .get('/orders/:inv', getDetailOrders)
-    .delete(`/orders/:inv`, deleteOrders)
-    .post('/orders', postOrders)
-    .delete('/orders', deleteOrdersDtl)
-    .patch('/orders/:id', updateOrdersDtl)
+    .get('/orders', authentication, getAllOrders)                            //Admin&cashier
+    .get('/orders/:inv',authentication,  authorizeAdmin, getDetailOrders)   //Admin
+    .delete(`/orders/:inv`,authentication, authorizeAdmin, deleteOrders)    //Admin
+    .post('/orders', authentication, authorizeCashier, postOrders)          //Cashier
+    .delete('/orders',authentication, authorizeAdmin, deleteOrdersDtl)      //Admin
+    .patch('/orders/:id',authentication, authorizeAdmin, updateOrdersDtl)   //Admin
 
 module.exports = route

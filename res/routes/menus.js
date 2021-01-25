@@ -11,15 +11,15 @@ const {
     patchMenus
 } = require('../controllers/menus')
 
-const {authentication, authorizeAdmin, authorizeCashier} = require('../helpers/middleware/auth')
+const {authentication, authorizeAdmin} = require('../helpers/middleware/auth')
 
 // Atur route menus
 route
-    .get('/menus', authentication, authorizeAdmin, getAllMenus)
-    .get('/menus/:id', authentication, authorizeCashier, getDetailMenus)
-    .post('/menus', authentication, addMenus)
-    .delete('/menus/:id', authentication, deleteMenus)
-    .put('/menus/:id', authentication, updateMenus)
-    .patch('/menus/:id', authentication, patchMenus)
+    .get('/menus', authentication, getAllMenus)                         //Admin & Cashier
+    .get('/menus/:id', authentication, getDetailMenus)                  //Admin & Cashier
+    .post('/menus', authentication,authorizeAdmin, addMenus)            //Admin
+    .delete('/menus/:id', authentication, authorizeAdmin, deleteMenus)  //Admin
+    .put('/menus/:id', authentication,authorizeAdmin, updateMenus)      //Admin
+    .patch('/menus/:id', authentication, authorizeAdmin,patchMenus)     //Admin
 
 module.exports = route
