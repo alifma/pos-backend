@@ -10,7 +10,8 @@ const {
     modelTotalRange,
     modelTotalIncome,
     modelLastWeekOrders,
-    modelTotalYesterday
+    modelTotalYesterday,
+    modelRedisOrders
 } = require('../models/orders')
 
 // Moment JS
@@ -22,14 +23,31 @@ const {
     success
 } = require('../helpers/response')
 
+// Redis Client
+const redisClient = require('../config/redis')
+
 // Export Semua Method
 module.exports = {
+    // Lempar All Orders ke Redist
+    setRedisOrders: (req, res) => {
+        // Panggil Models All Orders
+        modelRedisOrders().then((response) => {
+            // Ubah Response jadi String agar bisa disimpan di redis
+            const data = JSON.stringify(response)
+            // Set Data ke RedisClient
+            redisClient.set('dataOrders', data)
+        }).catch((err) => {
+            // Kalua ada Error
+            error(res, 500, 'Internal Server Redis Error', err.message, {})
+        })
+    },
+
     // Tampilkan Semua Order Berdasarkan Invoices
     getAllOrders: async (req, res) => {
         try {
             // Ambil Query dari URL
-            const sort = req.query.sort ? (req.query.sort).toUpperCase() : 'DESC'
-            const range = req.query.range ? (req.query.range).toUpperCase() : 'WEEK'
+            const sort = req.query.sort ? req.query.sort : 'DESC'
+            const range = req.query.range ? req.query.range : 'WEEK'
             const page = req.query.page ? req.query.page : '1'
             const limit = req.query.limit ? req.query.limit : '5'
             const offset = page === 1 ? 0 : (page - 1) * limit
@@ -80,6 +98,8 @@ module.exports = {
                             // Daftar Page Tersedia
                             pageList: listPage
                         }
+                        // 
+                        module.exports.setRedisOrders()
                         // Kalau hasilnya bukan array kosong
                         success(res, 200, 'Display All Order Success', pagination, arr)
                     } else {

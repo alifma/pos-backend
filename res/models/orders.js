@@ -3,7 +3,21 @@ const connection = require('../config/database')
 
 // Eksport Semua Method
 module.exports = {
-
+    // Lempar Data Orders ke Redis
+    modelRedisOrders: () => {
+        return new Promise((resolve, reject) => {
+            connection.query(`SELECT t_order.inv, t_order.cashier, t_order.created_at, 
+            GROUP_CONCAT(' ',t_menu.name,' x ',t_order.amount) as orders , sum(t_order.amount * t_order.price)*1.1 as total 
+            FROM t_order LEFT JOIN t_menu ON t_order.menu_id = t_menu.id GROUP BY t_order.inv`, (error, result) => {
+                if (error) {
+                    reject(new Error(error))
+                } else {
+                    resolve(result)
+                }
+            })
+        })
+    },
+    
     // Tampilkan Semua Transaksi Berdasarkan Invoice
     modelAllOrders: (offset, limit, sort, range) => {
         return new Promise((resolve, reject) => {
