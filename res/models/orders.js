@@ -3,6 +3,7 @@ const connection = require('../config/database')
 
 // Eksport Semua Method
 module.exports = {
+    
     // Lempar Data Orders ke Redis
     modelRedisOrders: () => {
         return new Promise((resolve, reject) => {

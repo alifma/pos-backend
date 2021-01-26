@@ -47,9 +47,12 @@ module.exports = {
                 .then((response) => {
                     // Kalau berhasil menambahkan kategori
                     if(response.length != 0){
+                        // Simpan Data ke Redis
                         module.exports.setRedisCtgry()
+                        // Kalau data Ada Isinya
                         success(res, 200, 'Show All Category Success', totalCategory[0], response)
                     }else{
+                        // Kalau tidak ada datanya
                         error(res, 400, 'No Data Found', '0 Result', {})
                     }
                 })
@@ -95,6 +98,8 @@ module.exports = {
             modelDeleteCtgry(id, currDate)
                 .then((response) => {
                     if (response.affectedRows != 0) {
+                        // Simpan Data ke Redis
+                        module.exports.setRedisCtgry()
                         // Kalau hasilnya bukan array kosong
                         success(res, 200, 'Delete Category Success', {}, {})
                     } else {
@@ -119,6 +124,8 @@ module.exports = {
             if (data.name) {
                 modelAddCtgry(data)
                     .then(() => {
+                        // Simpan Data ke Redis
+                        module.exports.setRedisCtgry()
                         // Jika tambah data sukses
                         success(res, 200, 'Add Category Success', {}, {})
                     })
@@ -149,6 +156,8 @@ module.exports = {
                 modelUpdateCtgry(data, id)
                     .then((response) => {
                         if (response.affectedRows != 0) {
+                            // Simpan Data ke Redis
+                            module.exports.setRedisCtgry()
                             // Jika ada data terupdate
                             success(res, 200, 'Update Category Success', {}, {})
                         } else {

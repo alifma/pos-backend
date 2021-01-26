@@ -98,7 +98,7 @@ module.exports = {
                             // Daftar Page Tersedia
                             pageList: listPage
                         }
-                        // 
+                        // Set Data ke Redis
                         module.exports.setRedisOrders()
                         // Kalau hasilnya bukan array kosong
                         success(res, 200, 'Display All Order Success', pagination, arr)
@@ -149,6 +149,8 @@ module.exports = {
             modelDeleteOrders(inv)
                 .then((response) => {
                     if (response.affectedRows != 0) {
+                        // Set Data ke Redis
+                        module.exports.setRedisOrders()
                         // Kalau ada yang terhapus
                         success(res, 200, 'Delete Order Sucess', {}, {})
                     } else {
@@ -184,6 +186,8 @@ module.exports = {
             if (dataChecker) {
                 modelPostOrders(data)
                     .then(() => {
+                        // Set Data ke Redis
+                        module.exports.setRedisOrders()
                         // Kalau berhasil menambahkan
                         success(res, 200, 'Add Order Success', {}, {})
                     })
@@ -208,6 +212,8 @@ module.exports = {
             modelDeleteDetails(id)
                 .then((response) => {
                     if (response.affectedRows != 0) {
+                        // Set Data ke Redis
+                        module.exports.setRedisOrders()
                         // Kalau berhasil menghapus detail
                         success(res, 200, 'Delete Order by Detail Success', {}, {})
                     } else {
@@ -237,6 +243,8 @@ module.exports = {
             modelUpdateDetails(data, id)
                 .then((response) => {
                     if (response.affectedRows != 0) {
+                        // Set Data ke Redis
+                        module.exports.setRedisOrders()
                         // Kalau berhasil mengupdate
                         success(res, 200, 'Update Order Success', {}, {})
                     } else {

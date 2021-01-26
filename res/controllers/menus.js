@@ -124,10 +124,18 @@ module.exports = {
     // Tambahkan Menu baru
     addMenus: (req, res) => {
         try {
-            const data = req.body
+            const rawData = req.body
+            const data = {
+                name: rawData.name,
+                price: rawData.price,
+                category_id: rawData.category_id,
+                image: req.file.filename
+            }
             if (data.image && data.category_id && data.price && data.name && data.image != '' && data.category_id!='' && data.price!=0 && data.image!=0) {
                 modelAddMenus(data)
                     .then(() => {
+                        // Set data ke Redis
+                        module.exports.setRedisMenus()
                         // Kalau berhasil menambahkan data
                         success(res, 200, 'Add Menu Success', {}, {})
                     })
@@ -141,6 +149,7 @@ module.exports = {
             }
         } catch (err) {
             // Kalau ada masalah lainnya
+            // res.send(err)
             error(res, 500, 'Internal Server Error', err.message, {})
         }
 
@@ -154,6 +163,8 @@ module.exports = {
             modelDeleteMenus(id, currDate)
                 .then((response) => {
                     if (response.affectedRows != 0) {
+                        // Set data ke Redis
+                        module.exports.setRedisMenus()
                         // Kalau ada yang terhapus
                         success(res, 200, 'Delete Menu Success', {}, {})
                     } else {
@@ -176,14 +187,23 @@ module.exports = {
         try {
             const id = req.params.id
             const currDate = moment().format('YYYY-MM-DDThh:mm:ss.ms');
+            const rawData = req.body
+            const baseData = {
+                name: rawData.name,
+                price: rawData.price,
+                category_id: rawData.category_id,
+                image: req.file.filename
+            }
             const data = {
-                ...req.body,
+                ...baseData,
                 'updated_at': currDate
             }
             if (data.image && data.category_id && data.price && data.name) {
                 modelUpdateMenus(data, id)
                     .then((response) => {
                         if (response.affectedRows != 0) {
+                            // Set data ke Redis
+                            module.exports.setRedisMenus()
                             // Kalau berhasil mengupdate
                             success(res, 200, 'Update Menu Success', {}, {})
                         } else {
@@ -210,13 +230,22 @@ module.exports = {
         try {
             const id = req.params.id
             const currDate = moment().format('YYYY-MM-DDThh:mm:ss.ms');
+            const rawData = req.body
+            const baseData = {
+                name: rawData.name,
+                price: rawData.price,
+                category_id: rawData.category_id,
+                image: req.file.filename
+            }
             const data = {
-                ...req.body,
+                ...baseData,
                 'updated_at': currDate
             }
             modelPatchMenus(data, id)
                 .then((response) => {
                     if (response.affectedRows != 0) {
+                        // Set data ke Redis
+                        module.exports.setRedisMenus()
                         // Kalau ada data yang terupdate
                         success(res, 200, 'Patch Menu Success', {}, {})
                     } else {

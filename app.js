@@ -39,6 +39,9 @@ app.use(routeOrder)
 app.use(routeCtgry)
 app.use(routeUsers)
 
+// Image Path
+app.use('/img', express.static('./public/img'))
+
 // Jika Tidak ada Route yang Ditemukan
 app.use("/", (req, res) => {
     notFound(res, "Endpoint not found")
