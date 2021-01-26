@@ -2,7 +2,7 @@
 const client = require('../../config/redis')
 
 // Response Helper 
-const { success } = require('../../helpers/response')
+const { error, success } = require('../../helpers/response')
 
 // Lodash
 var _ = require('lodash');
@@ -45,21 +45,25 @@ module.exports = {
           for(let i = 1; i <= Math.ceil(dataOrdered.length / limit); i++){
               listPages.push('?name='+name+'&limit='+limit+'&page='+i)
           }
-          const pagination = {
-            // Halaman Saat Ini
-            page,
-            // Limit Tiap Halaman
-            limit,
-            // Banyaknya Menus yang ada
-            totalMenus,
-            // Banyaknya Menus yang Memenuhi Filter
-            totalResult,  
-            // Banyaknya Halaman Yang Memenuhi Filter
-            pageResult: Math.ceil(dataOrdered.length / limit),
-            // Daftar Pages yang tersedia
-            listPages
+          if(dataPaginated.length != 0){
+            const pagination = {
+              // Halaman Saat Ini
+              page,
+              // Limit Tiap Halaman
+              limit,
+              // Banyaknya Menus yang ada
+              totalMenus,
+              // Banyaknya Menus yang Memenuhi Filter
+              totalResult,  
+              // Banyaknya Halaman Yang Memenuhi Filter
+              pageResult: Math.ceil(dataOrdered.length / limit),
+              // Daftar Pages yang tersedia
+              listPages
+            }
+            success(res, 200, 'Display Menu From Redis', pagination, dataPaginated)
+          }else{
+            error(res, 400, 'No data on this page', '0 Result', {})
           }
-          success(res, 200, 'Display Menu From Redis', pagination, dataPaginated)
         }else{
           next()
         }
