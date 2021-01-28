@@ -78,19 +78,6 @@ module.exports = {
         })
     },
 
-    // Hapus Detail dari setiap invoice berdasarkan ID
-    modelDeleteDetails: (id) => {
-        return new Promise((resolve, reject) => {
-            connection.query(`DELETE FROM t_order WHERE id='${id}'`, (error, result) => {
-                if (error) {
-                    reject(new Error(error))
-                } else {
-                    resolve(result)
-                }
-            })
-        })
-    },
-
     // Perbarui Detail dari setiap order berdasarkan ID
     modelUpdateDetails: (data, id) => {
         return new Promise((resolve, reject) => {

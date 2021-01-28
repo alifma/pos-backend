@@ -4,7 +4,6 @@ const {
     modelDetailOrders,
     modelDeleteOrders,
     modelPostOrders,
-    modelDeleteDetails,
     modelUpdateDetails,
     modelTotalOrders,
     modelTotalRange,
@@ -199,32 +198,6 @@ module.exports = {
                 // Kalau ada data yang kosong
                 error(res, 400, 'Please Fill All Field', 'Empty field found', {})
             }
-        } catch (err) {
-            // Kalau ada salah lainnya
-            error(res, 500, 'Internal Server Error', err.message, {})
-        }
-    },
-
-    // Hapus item di dalam invoice berdasarkan ID
-    deleteOrdersDtl: (req, res) => {
-        try {
-            const id = req.query.id
-            modelDeleteDetails(id)
-                .then((response) => {
-                    if (response.affectedRows != 0) {
-                        // Set Data ke Redis
-                        module.exports.setRedisOrders()
-                        // Kalau berhasil menghapus detail
-                        success(res, 200, 'Delete Order by Detail Success', {}, {})
-                    } else {
-                        // Kalau gagal menghapus karena salah ID
-                        error(res, 400, 'Nothing Deleted, Wrong ID', '0 Result', {})
-                    }
-                })
-                .catch((err) => {
-                    // Kalau ada salah tipe data
-                    error(res, 400, 'Wrong Parameter Type', err.message, {})
-                })
         } catch (err) {
             // Kalau ada salah lainnya
             error(res, 500, 'Internal Server Error', err.message, {})

@@ -8,7 +8,6 @@ const {
     getDetailOrders,
     deleteOrders,
     postOrders,
-    deleteOrdersDtl,
     updateOrdersDtl
 } = require('../controllers/orders')
 
@@ -19,7 +18,6 @@ route
     .get('/orders/:inv',authentication,  authorizeAdmin, getDetailOrders)   //Admin
     .delete(`/orders/:inv`,authentication, authorizeAdmin, deleteOrders)    //Admin
     .post('/orders', authentication, authorizeCashier, postOrders)          //Cashier
-    .delete('/orders',authentication, authorizeAdmin, deleteOrdersDtl)      //Admin
     .patch('/orders/:id',authentication, authorizeAdmin, updateOrdersDtl)   //Admin
 
 module.exports = route
