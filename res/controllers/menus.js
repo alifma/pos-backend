@@ -25,7 +25,8 @@ const {
 } = require('../helpers/response')
 
 // Redis Client
-const redisClient = require('../config/redis')
+const redisClient = require('../config/redis');
+const { isUndefined } = require('lodash');
 
 module.exports = {
     // Lempar All menus ke Redist
@@ -129,7 +130,7 @@ module.exports = {
     addMenus: (req, res) => {
         try {
             const rawData = req.body
-            if ( rawData.category_id && rawData.price && rawData.name &&  rawData.category_id!='' && rawData.price!=0 && req.file != undefined) {
+            if ( rawData.category_id && rawData.price && rawData.name &&  rawData.category_id!='' && rawData.price!=0 && !isUndefined(req.file)) {
                 const data = {
                     name: rawData.name,
                     price: rawData.price,
@@ -145,19 +146,25 @@ module.exports = {
                     })
                     .catch((err) => {
                         // Hapus File yang terupload keupload kalau gak jadi
-                        fs.unlinkSync(`./public/img/${req.file.filename}`)
+                        if(req.file){
+                            fs.unlinkSync(`./public/img/${req.file.filename}`)
+                        }
                         // Kalau tipe data ada yang salah
                         error(res, 400, 'Wrong Data Type Given', err.message, {})
                     })
             } else {
                 // Hapus File yang terupload keupload kalau gak jadi
-                fs.unlinkSync(`./public/img/${req.file.filename}`)
+                if(req.file){
+                    fs.unlinkSync(`./public/img/${req.file.filename}`)
+                }
                 // Kalau ada data yang kosong
                 error(res, 400, 'Please fill all field!', 'Empty field found', {})
             }
         } catch (err) {
             // Hapus File yang terupload keupload kalau gak jadi
-            fs.unlinkSync(`./public/img/${req.file.filename}`)
+            if(req.file){
+                fs.unlinkSync(`./public/img/${req.file.filename}`)
+            }
             // Kalau ada masalah lainnya
             error(res, 500, 'Internal Server Error', err.message, {})
         }
@@ -231,7 +238,7 @@ module.exports = {
             const id = req.params.id
             const currDate = moment().format('YYYY-MM-DDThh:mm:ss.ms');
             const rawData = req.body
-            if (rawData.category_id && rawData.price && rawData.name && req.file.filename != undefined) {
+            if (rawData.category_id && rawData.price && rawData.name && !isUndefined(req.file)) {
                 const baseData = {
                     name: rawData.name,
                     price: rawData.price,
@@ -251,26 +258,34 @@ module.exports = {
                             success(res, 200, 'Update Menu Success', {}, {})
                         } else {
                             // Hapus File yang Tadi keupload kalau gak jadi
-                            fs.unlinkSync(`./public/img/${req.file.filename}`)
+                            if(req.file){
+                                fs.unlinkSync(`./public/img/${req.file.filename}`)
+                            }
                             // Kalau tidak ada yang terupdate
                             error(res, 400, 'Nothing Updated, Wrong ID', {}, {})
                         }
                     })
                     .catch((err) => {
                         // Hapus File yang terupload keupload kalau gak jadi
-                        fs.unlinkSync(`./public/img/${req.file.filename}`)
+                        if(req.file){
+                            fs.unlinkSync(`./public/img/${req.file.filename}`)
+                        }
                         // Kalau tipe data ada yang salah
                         error(res, 400, 'Wrong Data Type Given', err.message, {})
                     })
             } else {
                 // Hapus File yang Tadi keupload kalau gak jadi
-                fs.unlinkSync(`./public/img/${req.file.filename}`)
+                if(req.file){
+                    fs.unlinkSync(`./public/img/${req.file.filename}`)
+                }
                 // Kalau ada data yang kosong
                 error(res, 400, 'Please Fill All Field!', 'Empty field found', {})
             }
         } catch (err) {
             // Hapus File yang terupload keupload kalau gak jadi
-            fs.unlinkSync(`./public/img/${req.file.filename}`)
+            if(req.file){
+                fs.unlinkSync(`./public/img/${req.file.filename}`)
+            }
             // Kalau ada masalah lainnya
             error(res, 500, 'Internal Server Error', err.message, {})
         }
@@ -283,49 +298,59 @@ module.exports = {
             const currDate = moment().format('YYYY-MM-DDThh:mm:ss.ms');
             const rawData = req.body
             let data = {}
-
-            // Hapus Gambar jika gambarnya tidak kosong
-            if(req.file != undefined) {
-                data = {
-                    ...rawData,
-                    image: req.file.filename,
-                    'updated_at': currDate
-                }
-                modelDetailMenus(id)
-                    .then((res)=> {
-                        fs.unlinkSync(`./public/img/${res[0].image}`)
-                    })
-                    .catch((err)=>{console.log(err)})
-            }else{
-                data = {
-                    ...rawData,
-                    'updated_at': currDate
-                } 
-            }
-            // Update Data Menus
-            modelPatchMenus(data, id)
-                .then((response) => {
-                    if (response.affectedRows != 0) {
-                        // Set data ke Redis
-                        module.exports.setRedisMenus()
-                        // Kalau ada data yang terupdate
-                        success(res, 200, 'Patch Menu Success', {}, {})
-                    } else {
-                        // Hapus File yang terupload keupload kalau gak jadi
-                        fs.unlinkSync(`./public/img/${req.file.filename}`)
-                        // Kalau tidak ada data yang berubah
-                        error(res, 400, 'Nothing Patched, Wrong ID', '0 Result', {})
+            if(!isUndefined(rawData.length)){
+                // Hapus Gambar jika gambarnya tidak kosong
+                if(!isUndefined(req.file)) {
+                    data = {
+                        ...rawData,
+                        image: req.file.filename,
+                        'updated_at': currDate
                     }
-                })
-                .catch((err) => {
-                    // Hapus File yang terupload keupload kalau gak jadi
-                    fs.unlinkSync(`./public/img/${req.file.filename}`)
-                    // Kalau tipe data ada yang salah
-                    error(res, 400, 'Wrong Data Type Given', err.message, {})
-                })
+                    modelDetailMenus(id)
+                        .then((res)=> {
+                            fs.unlinkSync(`./public/img/${res[0].image}`)
+                        })
+                        .catch((err)=>{console.log(err)})
+                }else{
+                    data = {
+                        ...rawData,
+                        'updated_at': currDate
+                    } 
+                }
+                // Update Data Menus
+                modelPatchMenus(data, id)
+                    .then((response) => {
+                        if (response.affectedRows != 0) {
+                            // Set data ke Redis
+                            module.exports.setRedisMenus()
+                            // Kalau ada data yang terupdate
+                            success(res, 200, 'Patch Menu Success', {}, {})
+                        } else {
+                            // Hapus File yang terupload keupload kalau gak jadi
+                            if(req.file){
+                                fs.unlinkSync(`./public/img/${req.file.filename}`)
+                            }
+                            // Kalau tidak ada data yang berubah
+                            error(res, 400, 'Nothing Patched, Wrong ID', '0 Result', {})
+                        }
+                    })
+                    .catch((err) => {
+                        // Hapus File yang terupload keupload kalau gak jadi
+                        if(req.file){
+                            fs.unlinkSync(`./public/img/${req.file.filename}`)
+                        }
+                        // Kalau tipe data ada yang salah
+                        error(res, 400, 'Wrong Data Type Given', err.message, {})
+                    })
+            }else{
+                // Kalau tidak ada data yang dimasukkan 
+                error(res, 400, 'Nothing Patched, No Data Given', 'Empty Data', {})
+            }
         } catch (err) {
             // Hapus File yang Tadi keupload kalau gak jadi
-            fs.unlinkSync(`./public/img/${req.file.filename}`)
+            if(req.file){
+                fs.unlinkSync(`./public/img/${req.file.filename}`)
+            }
             // Kalau ada masalah lainnya
             error(res, 500, 'Internal Server Error', err.message, {})
         }
