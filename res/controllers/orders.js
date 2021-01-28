@@ -46,7 +46,7 @@ module.exports = {
     getAllOrders: async (req, res) => {
         try {
             // Ambil Query dari URL
-            const sort = req.query.sort ? req.query.sort : 'DESC'
+            const sort = req.query.sort ? req.query.sort : 'desc'
             const range = req.query.range ? req.query.range : 'WEEK'
             const page = req.query.page ? req.query.page : '1'
             const limit = req.query.limit ? req.query.limit : '5'
@@ -54,10 +54,10 @@ module.exports = {
             // Ambil Dari Modal pakai Await
             const allIncome = await modelTotalIncome()
             const total = await modelTotalOrders(range)
-            const ttlRange = await modelTotalRange('DAY')
+            const ttlRange = await modelTotalRange('day')
             const incomeYesterday = await modelTotalYesterday()
             const ordersLastweek = await modelLastWeekOrders()
-            const ordersThisWeek = await modelTotalOrders('WEEK')
+            const ordersThisWeek = await modelTotalOrders('week')
             const listPage = []
             for (let i = 1; i <=Math.ceil(total[0].total / limit);i++){
                 listPage.push('?range='+range+'&limit='+limit+'&sort='+sort+'&page='+i)

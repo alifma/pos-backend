@@ -5,7 +5,7 @@ const client = require('../../config/redis')
 const {
   error,
   success
-} = require('../../helpers/response')
+} = require('../response')
 
 // Lodash
 var _ = require('lodash');
@@ -25,14 +25,14 @@ module.exports = {
           const page = req.query.page ? Number(req.query.page) : 1
           const limit = req.query.limit ? Number(req.query.limit) : 5
           const offset = page === 1 ? 0 : (page - 1) * limit
-          const sort = req.query.sort ? req.query.sort : 'DESC'
-          const range = req.query.range ? req.query.range : 'WEEK'
+          const sort = req.query.sort ? req.query.sort : 'desc'
+          const range = req.query.range ? req.query.range : 'year'
           // Data Filter Range
           const dataFilter = _.filter(response, (i) => {
             return (moment(i.created_at).valueOf() <= moment().valueOf()) && (moment(i.created_at).valueOf() >= moment().subtract(1, `${range}`).valueOf())
           })
           // Sorting Data
-          const dataSorted = _.orderBy(dataFilter, 'created_at', sort)
+          const dataSorted = _.orderBy(dataFilter, 'created_at', `${sort}`)
           // Data Paginated
           const dataPaginated = _.slice(dataSorted, offset, offset + limit)
           // Daftar Halaman
@@ -46,6 +46,8 @@ module.exports = {
               page,
               // Limit tiap halaman
               limit,
+              // Display Range
+              range,
               // Banyaknya Orders
               total: response.length,
               // Banyaknya Orders
