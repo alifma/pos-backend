@@ -10,7 +10,8 @@ const {
     modelTotalIncome,
     modelLastWeekOrders,
     modelTotalYesterday,
-    modelRedisOrders
+    modelRedisOrders,
+    modelPostHeadOrder
 } = require('../models/orders')
 
 // Moment JS
@@ -45,10 +46,10 @@ module.exports = {
     getAllOrders: async (req, res) => {
         try {
             // Ambil Query dari URL
-            const sort = req.query.sort ? req.query.sort : 'desc'
-            const range = req.query.range ? req.query.range : 'WEEK'
-            const page = req.query.page ? req.query.page : '1'
             const limit = req.query.limit ? req.query.limit : '5'
+            const sort = req.query.sort ? req.query.sort : 'desc'
+            const range = req.query.range ? req.query.range : 'YEAR'
+            const page = req.query.page ? req.query.page : '1'
             const offset = page === 1 ? 0 : (page - 1) * limit
             // Ambil Dari Modal pakai Await
             const allIncome = await modelTotalIncome()
@@ -69,7 +70,8 @@ module.exports = {
                             cashier: i.cashier,
                             created_at: i.created_at,
                             orders: i.orders,
-                            total: Number(i.total)
+                            total: Number(i.total),
+                            ppn: Math.ceil(Number(i.ppn))
                         }))
                         const pagination = {
                             // Halaman yang sedang diakses
@@ -175,7 +177,7 @@ module.exports = {
             // Inisialisasi Checker
             let dataChecker = false
             for(let i = 0; i<data.length;i++) {
-                if(data[i].menu_id && data[i].inv && data[i].cashier && data[i].price){
+                if(data[i].menu && data[i].inv && data[i].cashier && data[i].price && data[i].amount){
                     dataChecker = true
                 }else{
                     dataChecker = false
@@ -183,8 +185,15 @@ module.exports = {
                 }
             }
             if (dataChecker) {
+                let total = 0
+                for(let i = 0; i<data.length;i++) {
+                    total = total + (data[i].price * data[i].amount)
+                }
+                const dataHead = {"inv":data[0].inv, "cashier":data[0].cashier, "total": total}
                 modelPostOrders(data)
                     .then(() => {
+                        // Post Head Data
+                        modelPostHeadOrder(dataHead)
                         // Set Data ke Redis
                         module.exports.setRedisOrders()
                         // Kalau berhasil menambahkan

@@ -32,7 +32,7 @@ module.exports = {
             return (moment(i.created_at).valueOf() <= moment().valueOf()) && (moment(i.created_at).valueOf() >= moment().subtract(1, `${range}`).valueOf())
           })
           // Sorting Data
-          const dataSorted = _.orderBy(dataFilter, 'created_at', `${sort}`)
+          const dataSorted = _.orderBy(dataFilter, 'created_at', `desc`)
           // Data Paginated
           const dataPaginated = _.slice(dataSorted, offset, offset + limit)
           // Daftar Halaman

@@ -1,0 +1,1 @@
+SELECT t_order_head.inv, t_order_head.cashier, GROUP_CONCAT(' ',t_order.menu,' x ',t_order.amount) as orders , t_order_head.total *1.1 FROM t_order_head LEFT JOIN t_order ON t_order_head.inv = t_order.inv GROUP BY t_order_head.inv
