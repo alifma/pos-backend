@@ -90,12 +90,11 @@ module.exports = {
         }
     },
 
-    // SoftDelete Kategori
+    // Delete Kategori
     deleteCtgry: (req, res) => {
         try {
-            const currDate = moment().format('YYYY-MM-DDThh:mm:ss.ms');
             const id = req.params.id
-            modelDeleteCtgry(id, currDate)
+            modelDeleteCtgry(id)
                 .then((response) => {
                     if (response.affectedRows != 0) {
                         // Simpan Data ke Redis

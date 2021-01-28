@@ -3,7 +3,6 @@ const {
     modelAllMenus,
     modelDetailMenus,
     modelAddMenus,
-    modelSoftDeleteMenus,
     modelDeleteMenus,
     modelUpdateMenus,
     modelPatchMenus,
@@ -26,7 +25,7 @@ const {
 
 // Redis Client
 const redisClient = require('../config/redis');
-const { isUndefined } = require('lodash');
+const { isUndefined, isNull } = require('lodash');
 
 module.exports = {
     // Lempar All menus ke Redist
@@ -52,6 +51,7 @@ module.exports = {
             const offset = page === 1 ? 0 : (page - 1) * limit
             const orderby = req.query.order ? req.query.order : 'id'
             const sort = req.query.sort ? req.query.sort : 'ASC'
+            const deleteStatus = req.query.ready ? req.query.ready : 1
             // Ambil dari Modal pakai Await
             const total = await modelTotalMenus()
             const totalResult = await modelTotalResult(name)
@@ -59,7 +59,7 @@ module.exports = {
             for(let i = 1; i <= Math.ceil(totalResult[0].total / limit); i++){
                 listPages.push('?name='+name+'&limit='+limit+'&page='+i)
             }
-            modelAllMenus(name, offset, limit, orderby, sort)
+            modelAllMenus(name, offset, limit, orderby, sort, deleteStatus)
                 .then((response) => {
                     if (response.length != 0) {
                         const arr = response.map(i => ({
@@ -75,6 +75,8 @@ module.exports = {
                             totalMenus: total[0].total,
                             // Semua menu yang Sesuai Query
                             totalResult: totalResult[0].total,
+                            // Status yang Ditampilkan:
+                            menusType: deleteStatus == 1 ? 'Active' : 'Inactive',
                             // Jumlah Page yang Sesuai Query
                             pageResult: Math.ceil(totalResult[0].total / limit),
                             // Daftar Page Tersedia
@@ -171,34 +173,7 @@ module.exports = {
 
     },
 
-    // Softdelete Menu
-    softDeleteMenus: (req, res) => {
-        try {
-            const currDate = moment().format('YYYY-MM-DDThh:mm:ss.ms');
-            const id = req.params.id
-            modelSoftDeleteMenus(id, currDate)
-                .then((response) => {
-                    if (response.affectedRows != 0) {
-                        // Set data ke Redis
-                        module.exports.setRedisMenus()
-                        // Kalau ada yang terhapus
-                        success(res, 200, 'Delete Menu Success', {}, {})
-                    } else {
-                        // Kalau tidak ada  yang terhapus karena salah ID
-                        error(res, 400, 'Nothing deleted, Wrong ID!', {}, {})
-                    }
-                })
-                .catch((err) => {
-                    // Kalau Tipe ID Salah 
-                    error(res, 400, 'Wrong Parameter Type Given', err.message, {})
-                })
-        } catch (err) {
-            // Kalau ada masalah lainnya
-            error(res, 500, 'Internal Server Error', err.message, {})
-        }
-    },
-
-    // Softdelete Menu
+    // Delete Menu
     deleteMenus: (req, res) => {
         try {
             const currDate = moment().format('YYYY-MM-DDThh:mm:ss.ms');
@@ -297,9 +272,9 @@ module.exports = {
             const id = req.params.id
             const currDate = moment().format('YYYY-MM-DDThh:mm:ss.ms');
             const rawData = req.body
-            let data = {}
-            if(!isUndefined(rawData.length)){
+            if(rawData.category_id || rawData.price || rawData.name || !isUndefined(req.file) || rawData.isReady ){
                 // Hapus Gambar jika gambarnya tidak kosong
+                let data = {}
                 if(!isUndefined(req.file)) {
                     data = {
                         ...rawData,

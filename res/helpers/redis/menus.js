@@ -25,10 +25,13 @@ module.exports = {
           const offset = page === 1 ? 0 : (page - 1) * limit
           const orderby = req.query.order ? req.query.order : 'id'
           const sort = req.query.sort ? req.query.sort : 'ASC'
+          const deleteStatus = req.query.ready ? req.query.ready : 1
           // Banyaknya Menu Yang ada
           const totalMenus= response.length
+          // Filter Menu yang Aktif
+          const dataFilterStatus = _.filter(response, (item)=>{ return item.isReady == deleteStatus })
           // Filter Menu Berdasarkan Name
-          const dataFilterName = _.filter(response, (item)=>{ return item.name.includes(name) })
+          const dataFilterName = _.filter(dataFilterStatus, (item)=>{ return item.name.includes(name) })
           // Pengurutan Data
           const dataOrdered = _.orderBy(dataFilterName, orderby, sort)
           // Data Dibuat Per Halaman
@@ -50,6 +53,8 @@ module.exports = {
               totalMenus,
               // Banyaknya Menus yang Memenuhi Filter
               totalResult,  
+              // Status yang Ditampilkan:
+              menusType: deleteStatus == 1 ? 'Active' : 'Inactive',
               // Banyaknya Halaman Yang Memenuhi Filter
               pageResult: Math.ceil(dataOrdered.length / limit),
               // Daftar Pages yang tersedia

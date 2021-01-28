@@ -32,7 +32,7 @@ Backend for Point of Sales Application with database relation of 3 tables
    - Sort ascending or descending
    - Pagination
    - Update menu
-   - Soft delete menu
+   - Delete Menus
    - Redis Storage
 - CRUD Categories
    - Add new category
@@ -40,7 +40,7 @@ Backend for Point of Sales Application with database relation of 3 tables
    - Display all category
    - Display category details
    - Update category
-   - Soft delete category
+   - Delete category
    - Redis Storage
 - CRUD Orders
    - Add bluk order data

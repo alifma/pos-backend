@@ -6,7 +6,7 @@ module.exports = {
     // Tangkap Semua data untuk Redist
     modelRedisMenus: () => {
         return new Promise((resolve, reject) => {
-            connection.query(`SELECT * FROM t_menu WHERE isReady=1`, (error, result)=>{
+            connection.query(`SELECT * FROM t_menu`, (error, result)=>{
                 if (error) {
                     reject(new Error(error))
                 }else{
@@ -17,9 +17,9 @@ module.exports = {
     },
     
     // Tampilkan Semua Menu Yang Aktif
-    modelAllMenus: (name, offset, limit, orderby, sort) => {
+    modelAllMenus: (name, offset, limit, orderby, sort, status) => {
         return new Promise((resolve, reject) => {
-            connection.query(`SELECT t_menu.id,t_menu.name as name, t_category.name as category,t_menu.price, t_menu.image, t_menu.created_at FROM t_menu LEFT JOIN t_category ON t_menu.category_id = t_category.id WHERE t_menu.name LIKE '%${name}%' && t_menu.isReady=1 ORDER BY t_menu.${orderby}  ${sort} LIMIT ${offset}, ${limit}`, (error, result) => {
+            connection.query(`SELECT t_menu.id,t_menu.name as name, t_category.name as category,t_menu.price, t_menu.image, t_menu.created_at FROM t_menu LEFT JOIN t_category ON t_menu.category_id = t_category.id WHERE t_menu.name LIKE '%${name}%' && t_menu.isReady='${status}' ORDER BY t_menu.${orderby}  ${sort} LIMIT ${offset}, ${limit}`, (error, result) => {
                 if (error) {
                     reject(new Error(error))
                 } else {
@@ -47,20 +47,7 @@ module.exports = {
     modelAddMenus: (data) => {
         return new Promise((resolve, reject) => {
             connection.query(`INSERT INTO t_menu (name, price, image, category_id)
-            VALUES ('${data.name}', '${data.price}', '${data.image}', '${data.category_id}')`, (error, result) => {
-                if (error) {
-                    reject(new Error(error))
-                } else {
-                    resolve(result)
-                }
-            })
-        })
-    },
-
-    // Soft Delete Menu
-    modelSoftDeleteMenus: (id, currDate) => {
-        return new Promise((resolve, reject) => {
-            connection.query(`UPDATE t_menu SET isReady=0, updated_at='${currDate}' WHERE id=${id}`, (error, result) => {
+            VALUES ("${data.name}", '${data.price}', '${data.image}', '${data.category_id}')`, (error, result) => {
                 if (error) {
                     reject(new Error(error))
                 } else {
@@ -86,7 +73,7 @@ module.exports = {
     // Perbarui Menu (Keseluruhan)
     modelUpdateMenus: (data, id) => {
         return new Promise((resolve, reject) => {
-            connection.query(`UPDATE t_menu SET name='${data.name}', price='${data.price}', image='${data.image}', category_id='${data.category_id}', updated_at='${data.updated_at}' WHERE id = '${id}'`,
+            connection.query(`UPDATE t_menu SET name="${data.name}", price='${data.price}', image='${data.image}', category_id='${data.category_id}', updated_at='${data.updated_at}' WHERE id = '${id}'`,
                 (error, result) => {
                     if (error) {
                         reject(new Error(error))

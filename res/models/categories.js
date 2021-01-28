@@ -42,10 +42,10 @@ module.exports = {
         })
     },
 
-    // Softdelete Kategori
-    modelDeleteCtgry: (id, currDate) => {
+    // Delete Kategori
+    modelDeleteCtgry: (id) => {
         return new Promise((resolve, reject) => {
-            connection.query(`UPDATE t_category SET isReady=0, updated_at='${currDate}' WHERE id = ${id}`, (error, result) => {
+            connection.query(`DELETE FROM t_category WHERE id = ${id}`, (error, result) => {
                 if (error) {
                     reject(new Error(error))
                 } else {
