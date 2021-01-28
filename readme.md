@@ -2,19 +2,27 @@
 Backend for Point of Sales Application with database relation of 3 tables 
 
 ## Application Instalation
-1. Install Required NPM Packages 
+1. Make sure you already have Redis installed on your machine
+2. Clone POS-Backend Repository
+3. Install Required NPM Packages 
    > `npm install`
-2. Create database named `posvue` and import `posvue.sql` from this project folder
-3. Create `.env` files with this value
+4. Create database named `posvue` and import `posvue.sql` from this project folder
+5. Create `.env` files with this value
    > - DB_HOST= (Your Database Host) 
    > - DB_USER= (Your Database User)
    > - DB_PASSWORD= (Your Database Password)
    > - DB_NAME=posvue
    > - PORT= (Your decided port number, ex:3000)
-4. Start Application
+   > - JWT_SECRET= (Your own JWT)
+6. Start Redis Server
+   > `redis-server`
+7. Start Application
    > `npm start`
 
 ## Features
+- JWT Authentication
+- Multilevel Authorization (Admin and Cashier)
+- Upload Image
 - CRUD Menus
    - Add new menu
    - Display all menu
@@ -25,12 +33,15 @@ Backend for Point of Sales Application with database relation of 3 tables
    - Pagination
    - Update menu
    - Soft delete menu
+   - Redis Storage
 - CRUD Categories
    - Add new category
+   - Display all category
    - Display all category
    - Display category details
    - Update category
    - Soft delete category
+   - Redis Storage
 - CRUD Orders
    - Add bluk order data
    - Display order based on invoices
@@ -39,11 +50,17 @@ Backend for Point of Sales Application with database relation of 3 tables
    - Update order details 
    - Delete by details
    - Delete by invoice
+   - Redis Storage
 
 ## NPM Packages Used
 - [Body-Parser](https://www.npmjs.com/package/body-parser)
 - [Cors](https://www.npmjs.com/package/cors)
 - [Dotenv](https://www.npmjs.com/package/dotenv)
 - [Express](https://www.npmjs.com/package/express)
-- [mysql2](https://www.npmjs.com/package/mysql2)
+- [JWT](https://www.npmjs.com/package/jsonwebtoken)
+- [lodash](https://www.npmjs.com/package/lodash)
 - [moment](https://www.npmjs.com/package/moment)
+- [multer](https://www.npmjs.com/package/multer)
+- [mysql2](https://www.npmjs.com/package/mysql2)
+- [nodemon](https://www.npmjs.com/package/nodemon)
+- [redis](https://www.npmjs.com/package/redis)

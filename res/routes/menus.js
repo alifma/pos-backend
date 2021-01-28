@@ -8,6 +8,7 @@ const {
     getDetailMenus,
     addMenus,
     deleteMenus,
+    softDeleteMenus,
     updateMenus,
     patchMenus
 } = require('../controllers/menus')
@@ -26,6 +27,7 @@ route
     .get('/menus', authentication, getRedisMenus, getAllMenus)                          //Admin & Cashier
         .get('/menus/:id', authentication, getDetailMenus)                              //Admin & Cashier
         .post('/menus', authentication, authorizeAdmin, singleUpload, addMenus)         //Admin
+        .delete('/menus-s/:id', authentication, authorizeAdmin, softDeleteMenus)          //Admin
         .delete('/menus/:id', authentication, authorizeAdmin, deleteMenus)              //Admin
         .put('/menus/:id', authentication, authorizeAdmin, singleUpload, updateMenus)   //Admin
         .patch('/menus/:id', authentication, authorizeAdmin, singleUpload, patchMenus)  //Admin

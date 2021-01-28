@@ -16,7 +16,9 @@ module.exports = {
         res.json({
             code: rescode,
             msg: message,
-            systemMsg: sysMsg,
+            pagination: {
+                errorMsg: sysMsg
+            },
             data: arr
         })
     },

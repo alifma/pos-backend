@@ -32,7 +32,6 @@ module.exports = {
     // Tampilkan Detail menu
     modelDetailMenus: (id) => {
         return new Promise((resolve, reject) => {
-            // connection.query(`SELECT * FROM t_menu WHERE id=${id}`, (error, result) => {
             connection.query(`SELECT t_menu.id, t_menu.name as name, t_category.name as category, t_menu.category_id,t_menu.price, t_menu.image, t_menu.isReady,t_menu.created_at, t_menu.updated_at
             FROM t_menu LEFT JOIN t_category ON t_menu.category_id = t_category.id WHERE t_menu.id=${id}`, (error, result) => {
                 if (error) {
@@ -59,9 +58,22 @@ module.exports = {
     },
 
     // Soft Delete Menu
-    modelDeleteMenus: (id, currDate) => {
+    modelSoftDeleteMenus: (id, currDate) => {
         return new Promise((resolve, reject) => {
             connection.query(`UPDATE t_menu SET isReady=0, updated_at='${currDate}' WHERE id=${id}`, (error, result) => {
+                if (error) {
+                    reject(new Error(error))
+                } else {
+                    resolve(result)
+                }
+            })
+        })
+    },
+
+    // Delete Menu
+    modelDeleteMenus: (id) => {
+        return new Promise((resolve, reject) => {
+            connection.query(`DELETE FROM t_menu WHERE id='${id}'`, (error, result) => {
                 if (error) {
                     reject(new Error(error))
                 } else {

@@ -19,7 +19,7 @@ const multerStorage = multer.diskStorage({
 const multerUpload = multer({
   storage: multerStorage,
   limits: {
-      fileSize: 1024 * 1024
+      fileSize: 1024 * 1024 //1MB
   },
   fileFilter: (req, file, cb) => {
     const ext = path.extname(file.originalname)

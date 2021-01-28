@@ -10,9 +10,6 @@ const {
 // Lodash
 var _ = require('lodash');
 const moment = require('moment');
-const {
-  unix
-} = require('moment');
 
 module.exports = {
   getRedisOrders: (req, res, next) => {
@@ -34,12 +31,8 @@ module.exports = {
           const dataFilter = _.filter(response, (i) => {
             return (moment(i.created_at).valueOf() <= moment().valueOf()) && (moment(i.created_at).valueOf() >= moment().subtract(1, `${range}`).valueOf())
           })
-          let dataSorted = []
-          if (sort == 'ASC' || sort == 'asc') {
-            dataSorted = _.sortBy(dataFilter, 'created_at')
-          } else {
-            dataSorted = _.sortBy(dataFilter, 'created_at').reverse()
-          }
+          // Sorting Data
+          const dataSorted = _.orderBy(dataFilter, 'created_at', sort)
           // Data Paginated
           const dataPaginated = _.slice(dataSorted, offset, offset + limit)
           // Daftar Halaman

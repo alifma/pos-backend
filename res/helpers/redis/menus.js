@@ -29,17 +29,12 @@ module.exports = {
           const totalMenus= response.length
           // Filter Menu Berdasarkan Name
           const dataFilterName = _.filter(response, (item)=>{ return item.name.includes(name) })
-          // Banyaknya Data Yang memenuhi Filter Name
-          const totalResult = dataFilterName.length
           // Pengurutan Data
-          let dataOrdered = []
-          if(sort == 'ASC' || sort == 'asc'){
-            dataOrdered = _.sortBy(dataFilterName, orderby)
-          }else{
-            dataOrdered = _.sortBy(dataFilterName, orderby).reverse()
-          }
+          const dataOrdered = _.orderBy(dataFilterName, orderby, sort)
           // Data Dibuat Per Halaman
           const dataPaginated = _.slice(dataOrdered, offset, offset+limit)
+          // Banyaknya Data Yang memenuhi Filter Name
+          const totalResult = dataFilterName.length
           // Daftar Halaman
           const listPages = []
           for(let i = 1; i <= Math.ceil(dataOrdered.length / limit); i++){
