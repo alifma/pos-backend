@@ -8,7 +8,7 @@ const {
     modelTotalOrders,
     modelTotalRange,
     modelTotalIncome,
-    modelLastWeekOrders,
+    modelTotalLastWeek,
     modelTotalYesterday,
     modelRedisOrders,
     modelPostHeadOrder
@@ -24,7 +24,8 @@ const {
 } = require('../helpers/response')
 
 // Redis Client
-const redisClient = require('../config/redis')
+const redisClient = require('../config/redis');
+const { toUpper } = require('lodash');
 
 // Export Semua Method
 module.exports = {
@@ -48,56 +49,61 @@ module.exports = {
             // Ambil Query dari URL
             const limit = req.query.limit ? req.query.limit : '5'
             const sort = req.query.sort ? req.query.sort : 'desc'
-            const range = req.query.range ? req.query.range : 'YEAR'
+            const range = req.query.range ? toUpper(req.query.range) : 'YEAR'
             const page = req.query.page ? req.query.page : '1'
             const offset = page === 1 ? 0 : (page - 1) * limit
             // Ambil Dari Modal pakai Await
-            const allIncome = await modelTotalIncome()
-            const total = await modelTotalOrders(range)
-            const ttlRange = await modelTotalRange('day')
+            const allIncome       = await modelTotalIncome()
+            const total           = await modelTotalOrders(range)
+            const tdyIncome       = await modelTotalRange('day')
             const incomeYesterday = await modelTotalYesterday()
-            const ordersLastweek = await modelLastWeekOrders()
-            const ordersThisWeek = await modelTotalOrders('week')
-            const listPage = []
+            const ordersAll       = await modelTotalOrders('YEAR')
+            const ordersLastweek  = await modelTotalLastWeek()
+            const ordersThisWeek  = await modelTotalOrders('WEEK')
+            const listPages = []
             for (let i = 1; i <=Math.ceil(total[0].total / limit);i++){
-                listPage.push('?range='+range+'&limit='+limit+'&sort='+sort+'&page='+i)
+                listPages.push('?range='+range+'&limit='+limit+'&sort='+sort+'&page='+i)
             }
             modelAllOrders(offset, limit, sort, range)
                 .then((response) => {
                     if (response.length != 0) {
                         const arr = response.map(i => ({
-                            inv: Number(i.inv),
+                            inv: i.inv,
                             cashier: i.cashier,
                             created_at: i.created_at,
                             orders: i.orders,
                             total: Number(i.total),
                             ppn: Math.ceil(Number(i.ppn))
                         }))
-                        const pagination = {
+                        const pagination= {
                             // Halaman yang sedang diakses
-                            page: page,
+                            page,
                             // Batasan Banyaknya hasil per halaman
-                            limit: limit,
+                            limit,
+                            // range data yang sedang ditampilkan
+                            range,
                             // Banyaknya Invoices yang terdaftar
-                            totalInvoices: total[0].total,
+                            allOrders: ordersAll[0].total,
                             // Banyak Order Minggu ini
                             thisWeekOrders: ordersThisWeek[0].total,
                             // Banyak Order Minggu kemarin
                             lastWeekOrders: ordersLastweek[0].total,
                             // Order Gain Lastweek
                             gainOrders: ((ordersThisWeek[0].total-ordersLastweek[0].total)/ordersLastweek[0].total)*100,
+                            // Banyaknya Orders Yang Sesuai
+                            totalResult: total[0].total,
                             // Jumlah Halaman
-                            totalPage: Math.ceil(total[0].total / limit),
+                            totalPages: Math.ceil(total[0].total / limit),
                             // Jumlah Total Pemasukan
                             totalIncome: Number(allIncome[0].totalIncome),
                             // Jumlah Pemasukan Hari Ini
-                            todaysIncome: Number(ttlRange[0].totalIncome),
+                            todaysIncome: Number(tdyIncome[0].totalIncome),
                             // Jumlah Pemasukan Kemarin
                             YesterdayIncome: Number(incomeYesterday[0].yesterdayIncome),
                             // Kenaikan Penjualan
-                            gainIncome: (((ttlRange[0].totalIncome-incomeYesterday[0].yesterdayIncome)/incomeYesterday[0].yesterdayIncome)*100).toFixed(2) == Infinity?0:(((ttlRange[0].totalIncome-incomeYesterday[0].yesterdayIncome)/incomeYesterday[0].yesterdayIncome)*100).toFixed(2) == Infinity,
+                            gainIncome: (((tdyIncome[0].totalIncome-incomeYesterday[0].yesterdayIncome)/incomeYesterday[0].yesterdayIncome)*100).toFixed(2),
                             // Daftar Page Tersedia
-                            pageList: listPage
+                            listPages
                         }
                         // Set Data ke Redis
                         module.exports.setRedisOrders()

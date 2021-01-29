@@ -7,7 +7,7 @@ module.exports = {
     // Lempar Data Orders ke Redis
     modelRedisOrders: () => {
         return new Promise((resolve, reject) => {
-            connection.query(`SELECT t_order_head.inv, t_order_head.created_at, t_order_head.cashier, GROUP_CONCAT(' ',t_order.menu,' x ',t_order.amount) as orders , t_order_head.total as total, t_order_head.total * 0.1 as ppn
+            connection.query(`SELECT MIN(t_order_head.inv) as inv, t_order_head.created_at, t_order_head.cashier, GROUP_CONCAT(' ',t_order.menu,' x ',t_order.amount) as orders , t_order_head.total as total, t_order_head.total * 0.1 as ppn
             FROM t_order_head LEFT JOIN t_order ON t_order_head.inv = t_order.inv 
             GROUP BY t_order_head.inv`, (error, result) => {
                 if (error) {
@@ -22,10 +22,16 @@ module.exports = {
     // Tampilkan Semua Transaksi Berdasarkan Invoice
     modelAllOrders: (offset, limit, sort, range) => {
         return new Promise((resolve, reject) => {
-            connection.query(
-                `SELECT t_order_head.inv, t_order_head.created_at, t_order_head.cashier, GROUP_CONCAT(' ',t_order.menu,' x ',t_order.amount) as orders , t_order_head.total as total, t_order_head.total * 0.1 as ppn
+            let sql = ''
+            if (range == 'DAY' || range == 'day') {
+                sql = `SELECT MIN(t_order_head.inv) AS inv, t_order_head.created_at, t_order_head.cashier, GROUP_CONCAT(' ',t_order.menu,' x ',t_order.amount) as orders , t_order_head.total as total, t_order_head.total * 0.1 as ppn
+                FROM t_order_head LEFT JOIN t_order ON t_order_head.inv = t_order.inv WHERE CAST(t_order_head.created_at AS DATE) = CURDATE() GROUP BY t_order_head.inv ORDER BY t_order_head.created_at ${sort} LIMIT ${offset}, ${limit}`
+            }else{
+                sql = `SELECT MIN(t_order_head.inv) AS inv, t_order_head.created_at, t_order_head.cashier, GROUP_CONCAT(' ',t_order.menu,' x ',t_order.amount) as orders , t_order_head.total as total, t_order_head.total * 0.1 as ppn
                 FROM t_order_head LEFT JOIN t_order ON t_order_head.inv = t_order.inv WHERE t_order_head.created_at BETWEEN date_sub(now(),INTERVAL 1 ${range}) and now() 
-                GROUP BY t_order_head.inv ORDER BY t_order_head.created_at ${sort}  LIMIT ${offset}, ${limit}`, (error, result) => {
+                GROUP BY t_order_head.inv ORDER BY t_order_head.created_at ${sort} LIMIT ${offset}, ${limit}`
+            }
+            connection.query(sql, (error, result) => {
                     if (error) {
                         reject(new Error(error))
                     } else {
@@ -108,7 +114,7 @@ module.exports = {
     // Banyaknya Order yang Terjadi
     modelTotalOrders: (range) => {
         return new Promise((resolve, reject) => {
-            connection.query(`SELECT COUNT(DISTINCT inv) as total FROM t_order_head WHERE created_at BETWEEN date_sub(now(),INTERVAL 1 ${range}) and now()`,
+            connection.query(`SELECT COUNT(inv) as total FROM t_order_head WHERE created_at BETWEEN date_sub(now(),INTERVAL 1 ${range}) and now()`,
                 (error, result) => {
                     if (error) {
                         reject(new Error(error))
@@ -136,7 +142,13 @@ module.exports = {
     // Total Pemasukan Sesuai Range
     modelTotalRange: (range) => {
         return new Promise((resolve, reject) => {
-            connection.query(`SELECT sum(total) as totalIncome FROM t_order_head WHERE created_at BETWEEN date_sub(now(),INTERVAL 1 ${range}) and now()`,
+            let sql = ''
+            if(range == 'DAY' || 'day'){
+                sql = `SELECT SUM(total) as totalIncome FROM t_order_head WHERE CAST(t_order_head.created_at AS DATE) = CURDATE()`
+            }else{
+                sql = `SELECT sum(total) as totalIncome FROM t_order_head WHERE created_at BETWEEN date_sub(now(),INTERVAL 1 ${range}) and now()`
+            }
+            connection.query(sql,
                 (error, result) => {
                     if (error) {
                         reject(new Error(error))
@@ -162,7 +174,7 @@ module.exports = {
     },
 
     // Banyaknya Order yang Terjadi Minggu Kemarin
-    modelLastWeekOrders: () => {
+    modelTotalLastWeek: () => {
         return new Promise((resolve, reject) => {
             connection.query(`SELECT COUNT(DISTINCT inv) as total FROM t_order_head WHERE DATE(created_at) < CURDATE()-7 && DATE(created_at) > CURRENT_DATE - 14`,
                 (error, result) => {

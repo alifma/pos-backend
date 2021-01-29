@@ -28,11 +28,14 @@ module.exports = {
           const sort = req.query.sort ? req.query.sort : 'desc'
           const range = req.query.range ? req.query.range : 'year'
           // Data Filter Range
+          const startDate = moment().format('YYYY-MM-DD') 
+          const endDate = moment().subtract(1,`${range}`).format('YYYY-MM-DD')
           const dataFilter = _.filter(response, (i) => {
-            return (moment(i.created_at).valueOf() <= moment().valueOf()) && (moment(i.created_at).valueOf() >= moment().subtract(1, `${range}`).valueOf())
+            let dataDate = moment(i.created_at).format('YYYY-MM-DD')
+            return ((dataDate > endDate) && (dataDate <= startDate))
           })
           // Sorting Data
-          const dataSorted = _.orderBy(dataFilter, 'created_at', `desc`)
+          const dataSorted = _.orderBy(dataFilter, 'created_at', `${sort}`)
           // Data Paginated
           const dataPaginated = _.slice(dataSorted, offset, offset + limit)
           // Daftar Halaman
@@ -48,14 +51,48 @@ module.exports = {
               limit,
               // Display Range
               range,
-              // Banyaknya Orders
-              total: response.length,
-              // Banyaknya Orders
+              // Total Invoices
+              totalOrders: response.length,
+              // Banyak Order Minggu Ini
+//              thisWeekOrders:
+              // Banyak Order Minggu Kemarin 
+//              lastWeekOrders:
+              // Order Gain Lastweek
+//               gainOrders: ((ordersThisWeek[0].total-ordersLastweek[0].total)/ordersLastweek[0].total)*100,
+              // Banyaknya Orders Yang Sesuai
               totalResult: dataFilter.length,
-              // Banyaknya Halaman
-              pageResult: Math.ceil(dataFilter.length / limit),
+              // Jumlah Halaman
+              totalPages: Math.ceil(dataFilter.length / limit),
+              // Jumlah Total Pemasukan
+//              totalIncome: Number(allIncome[0].totalIncome),
+              // Jumlah Pemasukan Hari Ini
+//             todaysIncome: Number(ttlRange[0].totalIncome),
+              // Jumlah Pemasukan Kemarin
+//              YesterdayIncome: Number(incomeYesterday[0].yesterdayIncome),
+              // Kenaikan Penjualan
+//              gainIncome: (((ttlRange[0].totalIncome-incomeYesterday[0].yesterdayIncome)/incomeYesterday[0].yesterdayIncome)*100).toFixed(2) == Infinity?0:(((ttlRange[0].totalIncome-incomeYesterday[0].yesterdayIncome)/incomeYesterday[0].yesterdayIncome)*100).toFixed(2) == Infinity,
               // Daftar Halaman Tersedia
               listPages
+
+              /*
+        "page": "2",
+        "limit": "5",
+        "range": "YEAR",
+        "allOrders": 6,
+        "thisWeekOrders": 4,
+        "lastWeekOrders": 1,
+        "gainOrders": 300,
+        "totalResult": 6,
+        "totalPages": 2,
+        "totalIncome": 244000,
+        "todaysIncome": 35000,
+        "YesterdayIncome": 139000,
+        "gainIncome": "-74.82",
+        "listPages": [
+            "?range=YEAR&limit=5&sort=desc&page=1",
+            "?range=YEAR&limit=5&sort=desc&page=2"
+        ]
+              */
             }
             success(res, 200, 'Display Orders From Redis', pagination, dataPaginated)
           } else {
