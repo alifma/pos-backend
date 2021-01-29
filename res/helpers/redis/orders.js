@@ -27,10 +27,10 @@ module.exports = {
           const offset = page === 1 ? 0 : (page - 1) * limit
           const sort = req.query.sort ? req.query.sort : 'desc'
           const range = req.query.range ? req.query.range : 'year'
-          // Data Filter Range
-          const startDate = moment().format('YYYY-MM-DD') 
-          const endDate = moment().subtract(1,`${range}`).format('YYYY-MM-DD')
+          // Data Filter Range Search
           const dataFilter = _.filter(response, (i) => {
+            const startDate = moment().format('YYYY-MM-DD') 
+            const endDate = moment().subtract(1,`${range}`).format('YYYY-MM-DD')
             let dataDate = moment(i.created_at).format('YYYY-MM-DD')
             return ((dataDate > endDate) && (dataDate <= startDate))
           })
@@ -43,6 +43,48 @@ module.exports = {
           for (let i = 1; i <= Math.ceil(dataFilter.length / limit); i++) {
             listPages.push('?limit=' + limit + '&page=' + i)
           }
+          // TodaysOrder
+          const filterToday = _.filter(response, (i) => {
+            const startDate = moment().format('YYYY-MM-DD') 
+            const endDate = moment().subtract(1,`DAY`).format('YYYY-MM-DD')
+            let dataDate = moment(i.created_at).format('YYYY-MM-DD')
+            return ((dataDate > endDate) && (dataDate <= startDate))
+          })
+          let todaysIncome = 0
+          for(let i = 0; i<filterToday.length;i++){
+            todaysIncome = todaysIncome + filterToday[i].total
+          }
+          // YesterdayOrder
+          const filterYesterday = _.filter(response, (i) => {
+            const startDate = moment().format('YYYY-MM-DD') 
+            const endDate = moment().subtract(1,`DAY`).format('YYYY-MM-DD')
+            let dataDate = moment(i.created_at).format('YYYY-MM-DD')
+            return ((dataDate >= endDate) && (dataDate < startDate))
+          })
+          let yesterdayIncome = 0
+          for(let i = 0; i<filterYesterday.length;i++){
+            yesterdayIncome = yesterdayIncome + filterYesterday[i].total
+          }
+          // This Week Order
+          const filterThisWeek = _.filter(response, (i) => {
+            const startDate = moment().format('YYYY-MM-DD') 
+            const endDate = moment().subtract(1,`week`).format('YYYY-MM-DD')
+            let dataDate = moment(i.created_at).format('YYYY-MM-DD')
+            return ((dataDate > endDate) && (dataDate <= startDate))
+          })
+          // Last Week Order
+          const filterLastWeek = _.filter(response, (i) => {
+            const startDate = moment().subtract(1,`week`).format('YYYY-MM-DD')
+            const endDate = moment().subtract(2,`week`).format('YYYY-MM-DD')
+            let dataDate = moment(i.created_at).format('YYYY-MM-DD')
+            return ((dataDate > endDate) && (dataDate <= startDate))
+          })
+          // All Income
+          let totalIncome = 0
+          for(let i = 0;i<response.length; i++){
+            totalIncome = totalIncome+response[i].total
+          }
+          // Output
           if (dataPaginated.length != 0) {
             const pagination = {
               // Halaman saaat ini
@@ -54,45 +96,25 @@ module.exports = {
               // Total Invoices
               totalOrders: response.length,
               // Banyak Order Minggu Ini
-//              thisWeekOrders:
+              thisWeekOrders: filterThisWeek.length,
               // Banyak Order Minggu Kemarin 
-//              lastWeekOrders:
+              lastWeekOrders: filterLastWeek.length,
               // Order Gain Lastweek
-//               gainOrders: ((ordersThisWeek[0].total-ordersLastweek[0].total)/ordersLastweek[0].total)*100,
+              gainOrders: ((filterThisWeek.length-filterLastWeek.length)/filterLastWeek.length)*100,
               // Banyaknya Orders Yang Sesuai
               totalResult: dataFilter.length,
               // Jumlah Halaman
               totalPages: Math.ceil(dataFilter.length / limit),
               // Jumlah Total Pemasukan
-//              totalIncome: Number(allIncome[0].totalIncome),
+              totalIncome,
               // Jumlah Pemasukan Hari Ini
-//             todaysIncome: Number(ttlRange[0].totalIncome),
+              todaysIncome,
               // Jumlah Pemasukan Kemarin
-//              YesterdayIncome: Number(incomeYesterday[0].yesterdayIncome),
+              yesterdayIncome,
               // Kenaikan Penjualan
-//              gainIncome: (((ttlRange[0].totalIncome-incomeYesterday[0].yesterdayIncome)/incomeYesterday[0].yesterdayIncome)*100).toFixed(2) == Infinity?0:(((ttlRange[0].totalIncome-incomeYesterday[0].yesterdayIncome)/incomeYesterday[0].yesterdayIncome)*100).toFixed(2) == Infinity,
+              gainIncome: (((todaysIncome-yesterdayIncome)/yesterdayIncome)*100).toFixed(2),
               // Daftar Halaman Tersedia
               listPages
-
-              /*
-        "page": "2",
-        "limit": "5",
-        "range": "YEAR",
-        "allOrders": 6,
-        "thisWeekOrders": 4,
-        "lastWeekOrders": 1,
-        "gainOrders": 300,
-        "totalResult": 6,
-        "totalPages": 2,
-        "totalIncome": 244000,
-        "todaysIncome": 35000,
-        "YesterdayIncome": 139000,
-        "gainIncome": "-74.82",
-        "listPages": [
-            "?range=YEAR&limit=5&sort=desc&page=1",
-            "?range=YEAR&limit=5&sort=desc&page=2"
-        ]
-              */
             }
             success(res, 200, 'Display Orders From Redis', pagination, dataPaginated)
           } else {
