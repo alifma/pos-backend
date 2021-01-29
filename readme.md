@@ -33,6 +33,7 @@ Backend for Point of Sales Application with database relation of 3 tables
    - Pagination
    - Update menu
    - Delete Menus
+   - Soft Delete Menus
    - Redis Storage
 - CRUD Categories
    - Add new category
@@ -43,7 +44,8 @@ Backend for Point of Sales Application with database relation of 3 tables
    - Delete category
    - Redis Storage
 - CRUD Orders
-   - Add bluk order data
+   - Order and details order data are divided in two tables
+   - Add bulk order data
    - Display order based on invoices
    - Display detail every invoice
    - Pagination
@@ -64,3 +66,6 @@ Backend for Point of Sales Application with database relation of 3 tables
 - [mysql2](https://www.npmjs.com/package/mysql2)
 - [nodemon](https://www.npmjs.com/package/nodemon)
 - [redis](https://www.npmjs.com/package/redis)
+
+## Deployment
+> This Application currently online, you can send me an email if you want to check the backend ;)
