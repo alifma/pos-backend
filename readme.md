@@ -1,6 +1,12 @@
 # Backend POS
 Backend for Point of Sales Application with database relation of 3 tables 
 
+## Deployment
+> This Application currently online, you can send me an email if you want to check the backend ;)
+
+## API Documentation
+> You can check Postman API Documentation [Here](https://documenter.getpostman.com/view/10242708/TW6xooDA)
+
 ## Application Instalation
 1. Make sure you already have Redis installed on your machine
 2. Clone POS-Backend Repository
@@ -66,6 +72,3 @@ Backend for Point of Sales Application with database relation of 3 tables
 - [mysql2](https://www.npmjs.com/package/mysql2)
 - [nodemon](https://www.npmjs.com/package/nodemon)
 - [redis](https://www.npmjs.com/package/redis)
-
-## Deployment
-> This Application currently online, you can send me an email if you want to check the backend ;)

@@ -2,11 +2,12 @@
 	"info": {
 		"_postman_id": "14adbc99-674e-4557-a388-478661a49624",
 		"name": "POS",
+		"description": "API For Pos-Backend\nthis API has 3 endpoints that can be used to manage orders etc,\nyou should have an access before, please register at /register\n- /menus\n- /orders\n- /categories",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
 		{
-			"name": "Menu",
+			"name": "Menus",
 			"item": [
 				{
 					"name": "menu-AddData",
@@ -17,14 +18,14 @@
 								"key": "token",
 								"value": "{{tokenAdmin}}",
 								"description": "Admin",
-								"type": "text",
-								"disabled": true
+								"type": "text"
 							},
 							{
 								"key": "token",
 								"value": "{{tokenCashier}}",
 								"description": "Cashier",
-								"type": "text"
+								"type": "text",
+								"disabled": true
 							}
 						],
 						"body": {
@@ -32,12 +33,12 @@
 							"formdata": [
 								{
 									"key": "name",
-									"value": "Data SIap Delete",
+									"value": "Menu Special Hari   Sabtu",
 									"type": "text"
 								},
 								{
 									"key": "price",
-									"value": "3500",
+									"value": "20000",
 									"type": "text"
 								},
 								{
@@ -48,7 +49,7 @@
 								{
 									"key": "image",
 									"type": "file",
-									"src": "/home/alifma/Downloads/realgood.jpeg"
+									"src": "/home/alifma/Downloads/batagor.jpg"
 								}
 							],
 							"options": {
@@ -58,10 +59,13 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:3000/menus/",
+							"raw": "http://52.91.116.102:3000/menus/",
 							"protocol": "http",
 							"host": [
-								"localhost"
+								"52",
+								"91",
+								"116",
+								"102"
 							],
 							"port": "3000",
 							"path": [
@@ -92,10 +96,13 @@
 							}
 						],
 						"url": {
-							"raw": "http://localhost:3000/menus/?sort=desc",
+							"raw": "http://52.91.116.102:3000/menus/",
 							"protocol": "http",
 							"host": [
-								"localhost"
+								"52",
+								"91",
+								"116",
+								"102"
 							],
 							"port": "3000",
 							"path": [
@@ -110,16 +117,17 @@
 								},
 								{
 									"key": "name",
-									"value": "Coffee",
+									"value": "a",
 									"disabled": true
 								},
 								{
 									"key": "sort",
-									"value": "desc"
+									"value": "desc",
+									"disabled": true
 								},
 								{
 									"key": "page",
-									"value": "1",
+									"value": "2",
 									"disabled": true
 								},
 								{
@@ -147,48 +155,29 @@
 								"key": "token",
 								"value": "{{tokenAdmin}}",
 								"description": "Admin",
-								"type": "text"
+								"type": "text",
+								"disabled": true
 							},
 							{
 								"key": "token",
 								"value": "{{tokenCashier}}",
 								"description": "Cashier",
-								"type": "text",
-								"disabled": true
+								"type": "text"
 							}
 						],
 						"url": {
-							"raw": "http://localhost:3000/menus/10",
+							"raw": "http://52.91.116.102:3000/menus/10",
 							"protocol": "http",
 							"host": [
-								"localhost"
+								"52",
+								"91",
+								"116",
+								"102"
 							],
 							"port": "3000",
 							"path": [
 								"menus",
 								"10"
-							],
-							"query": [
-								{
-									"key": "order",
-									"value": "price",
-									"disabled": true
-								},
-								{
-									"key": "name",
-									"value": "Coffee",
-									"disabled": true
-								},
-								{
-									"key": "page",
-									"value": "1",
-									"disabled": true
-								},
-								{
-									"key": "sort",
-									"value": "desc",
-									"disabled": true
-								}
 							]
 						}
 					},
@@ -218,26 +207,27 @@
 							"formdata": [
 								{
 									"key": "name",
-									"value": "Real Gud",
+									"value": "Saturdays Special dishes",
 									"type": "text",
 									"disabled": true
 								},
 								{
 									"key": "category_id",
-									"value": "2",
+									"value": "1",
 									"type": "text",
 									"disabled": true
 								},
 								{
 									"key": "image",
 									"type": "file",
-									"src": "/home/alifma/Downloads/realgood.jpeg",
+									"src": "/home/alifma/Downloads/batagor.jpg",
 									"disabled": true
 								},
 								{
 									"key": "isReady",
 									"value": "1",
-									"type": "text"
+									"type": "text",
+									"disabled": true
 								}
 							],
 							"options": {
@@ -247,15 +237,18 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:3000/menus/14",
+							"raw": "http://52.91.116.102:3000/menus/16",
 							"protocol": "http",
 							"host": [
-								"localhost"
+								"52",
+								"91",
+								"116",
+								"102"
 							],
 							"port": "3000",
 							"path": [
 								"menus",
-								"14"
+								"16"
 							]
 						}
 					},
@@ -285,17 +278,17 @@
 							"formdata": [
 								{
 									"key": "name",
-									"value": "Real Good Milk",
+									"value": "Batagor Bandunk",
 									"type": "text"
 								},
 								{
 									"key": "category_id",
-									"value": "1",
+									"value": "2",
 									"type": "text"
 								},
 								{
 									"key": "price",
-									"value": "39900",
+									"value": "25000",
 									"type": "text"
 								},
 								{
@@ -311,10 +304,13 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:3000/menus/10",
+							"raw": "http://52.91.116.102:3000/menus/10",
 							"protocol": "http",
 							"host": [
-								"localhost"
+								"52",
+								"91",
+								"116",
+								"102"
 							],
 							"port": "3000",
 							"path": [
@@ -345,19 +341,43 @@
 							}
 						],
 						"url": {
-							"raw": "http://localhost:3000/menus/1",
+							"raw": "http://52.91.116.102:3000/menus/15",
 							"protocol": "http",
 							"host": [
-								"localhost"
+								"52",
+								"91",
+								"116",
+								"102"
 							],
 							"port": "3000",
 							"path": [
 								"menus",
-								"1"
+								"15"
 							]
 						}
 					},
 					"response": []
+				}
+			],
+			"description": "API request documentation on endpoint 'Menus'",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
 				}
 			]
 		},
@@ -385,7 +405,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "[\n    {\n        \"cashier\": \"Alif Maulana A 3\",\n        \"inv\": \"102032\",\n        \"menu_id\": 2,\n        \"amount\": 3,\n        \"price\": 15000 \n    },\n     {\n        \"cashier\": \"Alif Maulana A 3\",\n        \"inv\": \"102032\",\n        \"menu_id\": 3,\n        \"amount\": 2,\n        \"price\": 5000 \n    }\n]",
+							"raw": "[\n    {\n        \"cashier\": \"Alif Maulana Sabtu\",\n        \"inv\": \"102099\",\n        \"menu\": \"Makanan Enak\",\n        \"amount\": 2,\n        \"price\": 20000 \n    },{\n        \"cashier\": \"Alif Maulana Sabtu\",\n        \"inv\": \"102099\",\n        \"menu\": \"Minuman Enak\",\n        \"amount\": 2,\n        \"price\": 5000 \n    }\n]",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -393,17 +413,27 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:3000/orders/",
+							"raw": "http://52.91.116.102:3000/orders",
 							"protocol": "http",
 							"host": [
-								"localhost"
+								"52",
+								"91",
+								"116",
+								"102"
 							],
 							"port": "3000",
 							"path": [
-								"orders",
-								""
+								"orders"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1",
+									"disabled": true
+								}
 							]
-						}
+						},
+						"description": "Used for add new Data\n-Data Should be array of object"
 					},
 					"response": []
 				},
@@ -413,24 +443,27 @@
 						"method": "GET",
 						"header": [
 							{
-								"key": "token",
-								"value": "{{tokenAdmin}}",
 								"description": "Admin",
+								"key": "token",
 								"type": "text",
+								"value": "{{tokenAdmin}}",
 								"disabled": true
 							},
 							{
-								"key": "token",
-								"value": "{{tokenCashier}}",
 								"description": "Cashier",
-								"type": "text"
+								"key": "token",
+								"type": "text",
+								"value": "{{tokenCashier}}"
 							}
 						],
 						"url": {
-							"raw": "http://localhost:3000/orders?page=2&limit=1&sort=asc",
+							"raw": "http://52.91.116.102:3000/orders",
 							"protocol": "http",
 							"host": [
-								"localhost"
+								"52",
+								"91",
+								"116",
+								"102"
 							],
 							"port": "3000",
 							"path": [
@@ -438,24 +471,28 @@
 							],
 							"query": [
 								{
-									"key": "page",
-									"value": "2"
-								},
-								{
 									"key": "range",
 									"value": "day",
 									"disabled": true
 								},
 								{
 									"key": "limit",
-									"value": "1"
+									"value": "2",
+									"disabled": true
 								},
 								{
 									"key": "sort",
-									"value": "asc"
+									"value": "desc",
+									"disabled": true
+								},
+								{
+									"key": "page",
+									"value": "2",
+									"disabled": true
 								}
 							]
-						}
+						},
+						"description": "Used for display all data\nParams can be used : \n- range\n- limit\n- sort\n- page"
 					},
 					"response": []
 				},
@@ -491,15 +528,18 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:3000/orders/102031",
+							"raw": "http://52.91.116.102:3000/orders/102033",
 							"protocol": "http",
 							"host": [
-								"localhost"
+								"52",
+								"91",
+								"116",
+								"102"
 							],
 							"port": "3000",
 							"path": [
 								"orders",
-								"102031"
+								"102033"
 							]
 						}
 					},
@@ -526,7 +566,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"menu_id\":9,\n    \"amount\":2\n}",
+							"raw": "{\n    \"menu\":\"Pisang Goreng\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -534,15 +574,18 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:3000/orders/4",
+							"raw": "http://52.91.116.102:3000/orders/16",
 							"protocol": "http",
 							"host": [
-								"localhost"
+								"52",
+								"91",
+								"116",
+								"102"
 							],
 							"port": "3000",
 							"path": [
 								"orders",
-								"4"
+								"16"
 							]
 						}
 					},
@@ -577,24 +620,48 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:3000/orders/102030",
+							"raw": "http://52.91.116.102:3000/orders/102099",
 							"protocol": "http",
 							"host": [
-								"localhost"
+								"52",
+								"91",
+								"116",
+								"102"
 							],
 							"port": "3000",
 							"path": [
 								"orders",
-								"102030"
+								"102099"
 							]
 						}
 					},
 					"response": []
 				}
+			],
+			"description": "API request documentation on endpoint 'Orders'",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
 			]
 		},
 		{
-			"name": "Category",
+			"name": "Categories",
 			"item": [
 				{
 					"name": "ctgry-AddData",
@@ -620,22 +687,26 @@
 							"urlencoded": [
 								{
 									"key": "name",
-									"value": "Snacke",
+									"value": "Snacks",
 									"type": "text"
 								}
 							]
 						},
 						"url": {
-							"raw": "http://localhost:3000/categories",
+							"raw": "http://52.91.116.102:3000/categories",
 							"protocol": "http",
 							"host": [
-								"localhost"
+								"52",
+								"91",
+								"116",
+								"102"
 							],
 							"port": "3000",
 							"path": [
 								"categories"
 							]
-						}
+						},
+						"description": "Usage for Add new Data using json\nData Needed : \n- name : 'Lorem Ipsum' //should be string"
 					},
 					"response": []
 				},
@@ -671,16 +742,27 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:3000/categories",
+							"raw": "http://52.91.116.102:3000/categories",
 							"protocol": "http",
 							"host": [
-								"localhost"
+								"52",
+								"91",
+								"116",
+								"102"
 							],
 							"port": "3000",
 							"path": [
 								"categories"
+							],
+							"query": [
+								{
+									"key": "ready",
+									"value": "0",
+									"disabled": true
+								}
 							]
-						}
+						},
+						"description": "Usage for display all data\nFirst time you will use the normal data from database server and the next request will be served from redis-server"
 					},
 					"response": []
 				},
@@ -716,17 +798,21 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:3000/categories/3",
+							"raw": "http://52.91.116.102:3000/categories/5",
 							"protocol": "http",
 							"host": [
-								"localhost"
+								"52",
+								"91",
+								"116",
+								"102"
 							],
 							"port": "3000",
 							"path": [
 								"categories",
-								"3"
+								"5"
 							]
-						}
+						},
+						"description": "Usage for display detail data from server"
 					},
 					"response": []
 				},
@@ -739,14 +825,14 @@
 								"key": "token",
 								"value": "{{tokenAdmin}}",
 								"description": "Admin",
-								"type": "text",
-								"disabled": true
+								"type": "text"
 							},
 							{
 								"key": "token",
 								"value": "{{tokenCashier}}",
 								"description": "Cashier",
-								"type": "text"
+								"type": "text",
+								"disabled": true
 							}
 						],
 						"body": {
@@ -754,23 +840,33 @@
 							"urlencoded": [
 								{
 									"key": "name",
-									"value": "Snacks",
+									"value": "Snack",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "isReady",
+									"value": "0",
 									"type": "text"
 								}
 							]
 						},
 						"url": {
-							"raw": "http://localhost:3000/categories/3",
+							"raw": "http://52.91.116.102:3000/categories/6",
 							"protocol": "http",
 							"host": [
-								"localhost"
+								"52",
+								"91",
+								"116",
+								"102"
 							],
 							"port": "3000",
 							"path": [
 								"categories",
-								"3"
+								"6"
 							]
-						}
+						},
+						"description": "Used for update new data\nData Needed\n- name: 'Lorem Ipsum' //Should be string"
 					},
 					"response": []
 				},
@@ -794,27 +890,71 @@
 							}
 						],
 						"url": {
-							"raw": "http://localhost:3000/categories/4",
+							"raw": "http://52.91.116.102:3000/categories/5",
 							"protocol": "http",
 							"host": [
-								"localhost"
+								"52",
+								"91",
+								"116",
+								"102"
 							],
 							"port": "3000",
 							"path": [
 								"categories",
-								"4"
+								"5"
 							]
 						}
 					},
 					"response": []
 				}
+			],
+			"description": "API request documentation on endpoint 'Categories'",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
 			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
 		}
 	],
 	"variable": [
 		{
 			"key": "tokenAdmin",
-			"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFsaWZtYXVsYW5hMjZAZ21haWwuY29tIiwiaWQiOjEsImFjY2VzcyI6MCwiaWF0IjoxNjExNjI3NjcyfQ.0VLLM..."
+			"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFsaWZtYXVsYW5hMjZAZ21haWwuY29tIiwiaWQiOjEsImFjY2VzcyI6MCwiaWF0IjoxNjExNjI3NjcyfQ.0VLLMlruGAppHWhkTlfrVUgBI2EQF1Nujly7DH9h-Yk"
 		},
 		{
 			"key": "tokenCashier",
