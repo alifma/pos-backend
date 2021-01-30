@@ -61,6 +61,7 @@ Backend for Point of Sales Application with database relation of 3 tables
    - Redis Storage
 
 ## NPM Packages Used
+- [Bcrypt](https://www.npmjs.com/package/bcrypt)
 - [Body-Parser](https://www.npmjs.com/package/body-parser)
 - [Cors](https://www.npmjs.com/package/cors)
 - [Dotenv](https://www.npmjs.com/package/dotenv)
