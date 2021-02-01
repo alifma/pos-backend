@@ -1,6 +1,9 @@
 const bcrypt = require('bcrypt')
 const { mRegister, mLogin, mCheckEmail } = require('../models/users')
 const jwt = require('jsonwebtoken')
+// Response Helper 
+const { error, success } = require('../helpers/response')
+
 module.exports = {
   login : (req, res) => {
     const body = req.body
@@ -15,22 +18,22 @@ module.exports = {
             access: response[0].access
           }
           const jwttoken = jwt.sign(dataUser, process.env.JWT_SECRET)
-          res.json({msg: 'Login Success', token: jwttoken})
+          success(res, 200, 'Login Success', {token: jwttoken})
         }else{
-          res.json({msg: 'Pasword salah'})
+          error(res, 400, 'Login Failed', 'Wrong Password')
         }
       }else{
-        res.json({msg: 'Email Belum terdaftar'})
+        error(res, 400, 'Login Failed', 'Email is not registered')
       }
     })
-    .catch((err)=> res.json(err.message))
+    error(res, 400, 'Login Failed', err.message)
   },
   register : async (req, res) => {
     const body = req.body
     mCheckEmail(body.email)
     .then(async (response)=>{
       if(response.length >= 1) {
-        res.json({msg: 'Email Sudah terdaftar'})
+        error(res, 400, 'Registration Failed', 'Email already registered')
       }else{
         const salt = await bcrypt.genSalt(10)
         const password = await bcrypt.hash(body.password, salt)
@@ -41,10 +44,10 @@ module.exports = {
           password
         }
         mRegister(user)
-        .then((response)=>res.json(response))
-        .catch((err)=> res.json(err.message))
+        .then(()=> success(res, 200, 'Registration Success', {}))
+        .catch((err)=> error(res, 400, 'Registration Failed', err.message))
       }
     })
-    .catch((err)=> res.json(err.message))
+    error(res, 400, 'Registration Failed', 'Please fill all data')
   },
 }
