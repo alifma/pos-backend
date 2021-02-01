@@ -6,7 +6,7 @@ module.exports = {
     const body = req.body
     mCheckEmail(body.email)
     .then(async (response)=>{
-      if(response.length = 1){
+      if(response.length == 1){
         const checkPassword = await bcrypt.compare(body.password, response[0].password)
         if(checkPassword) {
           const dataUser = {
