@@ -26,7 +26,7 @@ module.exports = {
         error(res, 400, 'Login Failed', 'Email is not registered')
       }
     })
-    error(res, 400, 'Login Failed', err.message)
+    .catch((err)=> error(res, 400, 'Login Failed', err.message))
   },
   register : async (req, res) => {
     const body = req.body
