@@ -48,6 +48,7 @@ module.exports = {
         .catch((err)=> error(res, 400, 'Registration Failed', err.message))
       }
     })
-    error(res, 400, 'Registration Failed', 'Please fill all data')
+    .catch((err)=> error(res, 400, 'Registration Failed', err.message))
+   // error(res, 400, 'Registration Failed', 'Please fill all data')
   },
 }
