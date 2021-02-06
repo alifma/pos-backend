@@ -1,5 +1,5 @@
 const bcrypt = require('bcrypt')
-const { mRegister, mLogin, mCheckEmail } = require('../models/users')
+const { mRegister, mCheckEmail } = require('../models/users')
 const jwt = require('jsonwebtoken')
 // Response Helper 
 const { error, success } = require('../helpers/response')
