@@ -31,7 +31,7 @@ module.exports = {
           // Filter Menu yang Aktif
           const dataFilterStatus = _.filter(response, (item)=>{ return item.isReady == deleteStatus })
           // Filter Menu Berdasarkan Name
-          const dataFilterName = _.filter(dataFilterStatus, (item)=>{ return item.name.includes(name) })
+          const dataFilterName = _.filter(dataFilterStatus, (item)=>{ return item.name.includes(name) || item.name.includes(name.ltoLowerCase())})
           // Pengurutan Data
           const dataOrdered = _.orderBy(dataFilterName, orderby, sort)
           // Data Dibuat Per Halaman
