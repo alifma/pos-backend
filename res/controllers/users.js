@@ -18,7 +18,7 @@ module.exports = {
             access: response[0].access
           }
           const jwttoken = jwt.sign(dataUser, process.env.JWT_SECRET)
-          success(res, 200, 'Login Success', {token: jwttoken})
+          success(res, 200, 'Login Success', {name: response[0].name, token: jwttoken})
         }else{
           error(res, 400, 'Login Failed', 'Wrong Password')
         }
@@ -49,6 +49,5 @@ module.exports = {
       }
     })
     .catch((err)=> error(res, 400, 'Registration Failed', err.message))
-   // error(res, 400, 'Registration Failed', 'Please fill all data')
-  },
+  }
 }
