@@ -17,7 +17,11 @@ module.exports = {
       }else{
         if(result){
           // Ambil data Response
-          const response = JSON.parse(result)
+          const resAwal = JSON.parse(result)
+          const response = resAwal.map(i => ({	
+            ...i,	
+            isClicked: false	
+          }))
           // Ambil Parameter Yang dibutuhkan
           const limit = req.query.limit ? Number(req.query.limit) : 9
           const page = req.query.page ? Number(req.query.page) : 1
