@@ -17,11 +17,7 @@ module.exports = {
       }else{
         if(result){
           // Ambil data Response
-          const resAwal = JSON.parse(result)
-          const response = resAwal.map(i => ({
-            ...i,
-            isClicked: false
-          }))
+          const response = JSON.parse(result)
           // Ambil Parameter Yang dibutuhkan
           const limit = req.query.limit ? Number(req.query.limit) : 9
           const page = req.query.page ? Number(req.query.page) : 1
@@ -35,7 +31,7 @@ module.exports = {
           // Filter Menu yang Aktif
           const dataFilterStatus = _.filter(response, (item)=>{ return item.isReady == deleteStatus })
           // Filter Menu Berdasarkan Name
-          const dataFilterName = _.filter(dataFilterStatus, (item)=>{ return item.name.includes(name) || item.name.includes(name.toLowerCase())})
+          const dataFilterName = _.filter(dataFilterStatus, (item)=>{ return item.name.toLowerCase().includes(name.toLowerCase()) || item.name.toLowerCase().includes(name)})
           // Pengurutan Data
           const dataOrdered = _.orderBy(dataFilterName, orderby, sort)
           // Data Dibuat Per Halaman
