@@ -15,7 +15,7 @@ const { getRedisOrders } = require('../helpers/redis/orders')
 // Atur route orders
 route
     .get('/orders', authentication, getRedisOrders, getAllOrders)           //Admin&cashier
-    .get('/orders/:inv',authentication,  authorizeAdmin, getDetailOrders)   //Admin
+    .get('/orders/:inv',authentication, getDetailOrders)                    //Admin&cashier
     .delete(`/orders/:inv`,authentication, authorizeAdmin, deleteOrders)    //Admin
     .post('/orders', authentication, authorizeCashier, postOrders)          //Cashier
     .patch('/orders/:id',authentication, authorizeAdmin, updateOrdersDtl)   //Admin
