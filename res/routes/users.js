@@ -3,7 +3,7 @@ const express = require('express')
 
 const route = express.Router()
 route
-  .post('/login', login)
-  .post('/register', register)
+  .post('/api/login', login)
+  .post('/api/register', register)
 
 module.exports = route

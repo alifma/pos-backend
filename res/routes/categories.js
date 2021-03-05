@@ -17,10 +17,10 @@ const {getRedisCtgry} = require('../helpers/redis/categories')
 
 // Atur route menus
 route
-    .get('/categories', authentication, getRedisCtgry, getAllCtgry)         //Admin & Cashier
-    .get('/categories/:id', authentication, getDetailCtgry)                 //Admin & Cashier
-    .delete('/categories/:id', authentication, authorizeAdmin, deleteCtgry) //Admin
-    .post('/categories', authentication, authorizeAdmin, addCtgry)          //Admin
-    .patch('/categories/:id', authentication, authorizeAdmin, updateCtgry)  //Admin
+    .get('/api/categories', authentication, getRedisCtgry, getAllCtgry)         //Admin & Cashier
+    .get('/api/categories/:id', authentication, getDetailCtgry)                 //Admin & Cashier
+    .delete('/api/categories/:id', authentication, authorizeAdmin, deleteCtgry) //Admin
+    .post('/api/categories', authentication, authorizeAdmin, addCtgry)          //Admin
+    .patch('/api/categories/:id', authentication, authorizeAdmin, updateCtgry)  //Admin
 
 module.exports = route

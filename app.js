@@ -2,6 +2,9 @@
 const express = require('express')
 const app = express()
 
+// History Router
+const history = require('connect-history-api-fallback')
+
 // DotEnv
 const {
     PORT
@@ -42,10 +45,12 @@ app.use(routeUsers)
 // Image Path
 app.use('/img', express.static('./public/img'))
 
-// Jika Tidak ada Route yang Ditemukan
-app.use("/", (req, res) => {
-    notFound(res, "Endpoint not found")
-})
+// app.use(history({
+//   verbose: true
+// }))
+
+// // Deploy FrontEndPath
+// app.use('/', express.static('./dist'))
 
 // Konfigurasi listen port
 app.listen(PORT, () => {

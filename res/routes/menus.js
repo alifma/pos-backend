@@ -23,12 +23,12 @@ const {singleUpload} = require('../helpers/middleware/upload')
 
 // Atur route menus
 route
-    .get('/menus', authentication, getRedisMenus, getAllMenus)                          //Admin & Cashier
-        .get('/menus/:id', authentication, getDetailMenus)                              //Admin & Cashier
-        .post('/menus', authentication, authorizeAdmin, singleUpload, addMenus)         //Admin
-        .delete('/menus/:id', authentication, authorizeAdmin, deleteMenus)              //Admin
-        .put('/menus/:id', authentication, authorizeAdmin, singleUpload, updateMenus)   //Admin
-        .patch('/menus/:id', authentication, authorizeAdmin, singleUpload, patchMenus)  //Admin
+    .get('/api/menus', authentication, getRedisMenus, getAllMenus)                          //Admin & Cashier
+        .get('/api/menus/:id', authentication, getDetailMenus)                              //Admin & Cashier
+        .post('/api/menus', authentication, authorizeAdmin, singleUpload, addMenus)         //Admin
+        .delete('/api/menus/:id', authentication, authorizeAdmin, deleteMenus)              //Admin
+        .put('/api/menus/:id', authentication, authorizeAdmin, singleUpload, updateMenus)   //Admin
+        .patch('/api/menus/:id', authentication, authorizeAdmin, singleUpload, patchMenus)  //Admin
 
 // Exports Modules
 module.exports = route
