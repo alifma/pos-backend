@@ -45,12 +45,12 @@ app.use(routeUsers)
 // Image Path
 app.use('/img', express.static('./public/img'))
 
-// app.use(history({
-//   verbose: true
-// }))
+app.use(history({
+    verbose: true
+}))
 
-// // Deploy FrontEndPath
-// app.use('/', express.static('./dist'))
+// Deploy FrontEndPath
+app.use('/', express.static('./dist'))
 
 // Konfigurasi listen port
 app.listen(PORT, () => {
